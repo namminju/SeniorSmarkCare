@@ -20,3 +20,7 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+"""
+외부에서 유저들이 접근할 수 있는 url들이 이곳에 표시됨
+"""
