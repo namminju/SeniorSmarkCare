@@ -21,6 +21,7 @@ from holott.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mypage/', mypage),
+    path('signup/', signup),
 ]
 
 """
