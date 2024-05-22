@@ -15,15 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from holott.views import *
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mypage/', mypage),
-    path('signup/', signup),
+    path('accounts/', include('accounts.urls')), #유저 앱의 url들을 전부 포함
+    path('', include('holott.urls')) #앱 전반의 url들을 전부 포함
 ]
-
-"""
-외부에서 유저들이 접근할 수 있는 url들이 이곳에 표시됨
-"""
