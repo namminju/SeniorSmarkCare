@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'holott',
     'accounts',
     'bootstrap4',
+    'drf_yasg',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
