@@ -1,20 +1,29 @@
-{% load bootstrap4 %} {% block content %}
-<div class="wrapper" style="text-align: center">
-  <h1>회원가입</h1>
-  <form method="POST">
-    {% csrf_token %} 아이디: <br />
-    <input name="username" type="text" />
-    <br />
-    비밀번호: <br />
-    <input name="password1" type="password" />
-    <br />
-    비밀번호 확인: <br />
-    <input name="password2" type="password" />
-    <br />
-    이메일: <br />
-    <input name="email" type="email" />
-    <br /><br />
-    <input type="submit" class="btn btn-primary" value="Sign Up" />
-  </form>
-</div>
-{% endblock %}
+<!-- signup.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup</title>
+  </head>
+  <body>
+    <h2>Signup</h2>
+    <form method="post">
+      {% csrf_token %}
+      <label for="userName">Username:</label>
+      <input type="text" name="userName" required /><br />
+
+      <label for="userPhone">Phone:</label>
+      <input type="text" name="userPhone" required /><br />
+
+      <label for="password1">Password:</label>
+      <input type="password" name="password1" required /><br />
+
+      <label for="password2">Confirm Password:</label>
+      <input type="password" name="password2" required /><br />
+
+      <button type="submit">Sign up</button>
+    </form>
+    {% if error %}
+    <p style="color: red">{{ error }}</p>
+    {% endif %}
+  </body>
+</html>
