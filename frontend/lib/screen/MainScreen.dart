@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import '../screen/MedicalPage/MedicalHistory.dart'; // medicalhistory.dart 파일을 가져옵니다.
-import '../screen/SymtomPage/SymtomHistory.dart';
+
+import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
+import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
+import 'package:frontend/screen/MealPage/MealRecommend.dart';
+import 'package:frontend/screen/MealPage/MealTime.dart';
+
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreen createState() => _MainScreen();
 }
@@ -18,7 +24,9 @@ class _MainScreen extends State<MainScreen> {
       // 안전한 영역의 확보
       child: Scaffold(
         appBar: PreferredSize(
+
           preferredSize: Size.fromHeight(height * 0.2),
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -26,10 +34,11 @@ class _MainScreen extends State<MainScreen> {
                 title: Text('홀로똑똑'),
                 backgroundColor: Colors.transparent,
                 leading: Container(), // 앱 바 좌측에 있는 버튼 지우는 효과 -> 뒤로 가기 같은 거
-              ),
+             ),
               Image.asset(
                 'images/mainIcon.png',
                 width: width * 0.2,
+
               ),
             ],
           ),
@@ -261,7 +270,7 @@ class _MainScreen extends State<MainScreen> {
                   ])
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
