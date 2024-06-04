@@ -1,14 +1,29 @@
-from rest_framework import serializers
 from .models import User
-from django.core.validators import RegexValidator
+from django.contrib.auth.password_validation import validate_password # Django의 기본 pw 검증 도구
+from rest_framework.validators import UniqueValidator
+from rest_framework.authtoken.models import Token
+from rest_framework import serializers
 
 class SignupSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+    userName = serializers.CharField(
+        required = True,
+        validators = [UniqueValidator(queryset=User.objects.all())]
+    )
+    password1 = serializers.CharField(
+        write_only=True,
+        required=True,
+        validators=[validate_password], # 비밀번호에 대한 검증
+    )
+    password2 = serializers.CharField( # 비밀번호 확인을 위한 필드
+        write_only=True,
+        required=True,
+    )
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = [
+            'userName', 'userPhone', 'password1', 'password2'
+        ]
 
     def validate(self, data):
         if data['password1'] != data['password2']:
@@ -17,14 +32,10 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            userName=validated_data['userName'],
-            userPhone=validated_data['userPhone'],
-            password=validated_data['password1'],
-            userBirth=validated_data.get('userBirth'),
-            userGender=validated_data.get('userGender'),
-            userType=validated_data.get('userType'),
-            mealAlarmCnt=validated_data.get('mealAlarmCnt', 3),
-            exerciseAlarmCnt=validated_data.get('exerciseAlarmCnt', 3),
-            guardPhone=validated_data.get('guardPhone'),
+            userName = validated_data['userName'],
+            userPhone = validated_data['userPhone'],
         )
+        user.set_password(validated_data['password1'])
+        user.save()
+        token = Token.objects.create(user = user)
         return user
