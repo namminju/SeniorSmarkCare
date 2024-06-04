@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './SymtomCategory.dart';
+import './SymtomHistoryAdd.dart';
+import '../../widgets/PageNavigationBigButton.dart';
 
 class SymtomHistory extends StatefulWidget {
   @override
@@ -9,10 +11,9 @@ class SymtomHistory extends StatefulWidget {
 class _SymtomHistory extends State<SymtomHistory> {
   @override
   Widget build(BuildContext context) {
-    //Size screenSize = MediaQuery.of(context).size; //반응형으로 구현하기 위함
-    //double width = screenSize.width;
-    //double height = screenSize.height; //상대 수치를 이용하기 위함
-
+    Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
+    double width = screenSize.width;
+    double height = screenSize.height; // 상대 수치를 이용하기 위함
     return SafeArea(
       //안전한 영역의 확보
       child: Scaffold(
@@ -26,9 +27,25 @@ class _SymtomHistory extends State<SymtomHistory> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  '000님의 건강기록',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'images/mainPageImg/grandma.png',
+                      width: width * 0.1,
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                    Text(
+                      '000님',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      '의 건강기록',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.w300),
+                    )
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
@@ -104,6 +121,12 @@ class _SymtomHistory extends State<SymtomHistory> {
                             children: [
                               InkWell(
                                 onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SymtomHistoryAdd()),
+                                  );
                                   // 더보기 텍스트가 클릭되었을 때 실행되는 동작
                                 },
                                 child: Text(
@@ -138,7 +161,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                           child: Text(
                             '혹시 더 아픈 부위가 있으신가요?',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -171,6 +194,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
+                                  contentPadding: EdgeInsets.all(20),
                                   insetPadding: EdgeInsets.zero,
                                   backgroundColor: Color(0XFFF0F0F0),
                                   content: Column(
@@ -178,12 +202,25 @@ class _SymtomHistory extends State<SymtomHistory> {
                                         CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(
-                                        '오늘 나의 상태는?',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '오늘 나의 상태는?',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // 취소 버튼을 누르면 다이얼로그만 종료
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('X'),
+                                          ),
+                                        ],
                                       ),
                                       Divider(
                                         color: Colors.black,
@@ -192,38 +229,13 @@ class _SymtomHistory extends State<SymtomHistory> {
                                         width:
                                             300, // SymtomCategory 위젯의 너비를 지정합니다.
                                         height:
-                                            500, // SymtomCategory 위젯의 높이를 지정합니다.
-                                        child:
-                                            SymtomCategory(), // SymtomCategory 화면을 팝업에 표시합니다.
-                                      ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          padding: EdgeInsets.zero, // 패딩 없음
-                                          backgroundColor: Color(0xFFFEB2B2),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          elevation: 4, // 그림자 높이 조정
-                                        ),
-                                        onPressed: () {
-                                          // 버튼이 클릭되었을 때 실행되는 동작
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Container(
-                                          width: double.infinity,
-                                          height: 44,
-                                          child: Center(
-                                            child: Text(
-                                              '제출',
-                                              style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                            550, // SymtomCategory 위젯의 높이를 지정합니다.
+                                        child: SymtomCategory(
+                                          onSubmit: () {
+                                            // 제출 버튼이 눌렸을 때의 동작
+                                            Navigator.of(context).pop();
+                                          },
+                                        ), // SymtomCategory 화면을 팝업에 표시합니다.
                                       ),
                                     ],
                                   ),
