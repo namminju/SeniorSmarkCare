@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart'; // 예시에 맞춰 변경
 import 'package:frontend/widgets/NoticeDialog.dart'; // 예시에 맞춰 변경
 import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
+import 'package:frontend/screen/LoginPage/Login.dart';
 
-class JwtSignUp extends StatefulWidget {
+class FindPasswd extends StatefulWidget {
   @override
-  _JwtSignUpState createState() => _JwtSignUpState();
+  _FindPasswdState createState() => _FindPasswdState();
 }
 
-class _JwtSignUpState extends State<JwtSignUp> {
+class _FindPasswdState extends State<FindPasswd> {
   bool _showPasswordVerification = false;
   bool _showPhoneVerification = false;
   bool _isPhoneVerified = false;
@@ -53,7 +54,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                   padding: EdgeInsets.all(width * 0.03),
                 ),
                 Text(
-                  '회원가입',
+                  '비밀번호 찾기',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
@@ -67,29 +68,6 @@ class _JwtSignUpState extends State<JwtSignUp> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              TextField(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Color(0xFFF0F0F0),
-                                  hintText: '성명',
-                                ),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(padding: const EdgeInsets.only(top: 30)),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Stack(
@@ -281,7 +259,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignUpSuccess()),
+                                    builder: (context) => Login()),
                               );
                             },
                             child: Container(
@@ -289,7 +267,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               height: 40,
                               child: Center(
                                 child: Text(
-                                  '계속하기',
+                                  '저장하기',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
