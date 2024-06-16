@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 
 class SymtomHistoryAdd extends StatefulWidget {
   @override
@@ -11,9 +12,7 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: Text('건강 기록'),
-      ),
+      appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
