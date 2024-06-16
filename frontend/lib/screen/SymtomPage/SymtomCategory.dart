@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/PageNavigationBigButton.dart';
 import './SymtomHistory.dart';
+import 'package:frontend/widget/AppBar.dart';
 
 class SymtomCategory extends StatefulWidget {
   final VoidCallback? onSubmit;

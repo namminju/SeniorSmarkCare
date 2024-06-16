@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './TelemedAppointment.dart';
 import './MedicalHistoryAdd.dart';
+import 'package:frontend/widget/AppBar.dart';
 
 class MedicalHistory extends StatefulWidget {
   @override
@@ -13,9 +14,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: Text('비대면 진료 기록'),
-      ),
+      appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -84,7 +83,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                             child: Text(
                               '진료하러 가기',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 25,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
