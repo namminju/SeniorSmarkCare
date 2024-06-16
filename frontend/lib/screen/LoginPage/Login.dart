@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/screen/LoginPage/JwtSignUp.dart';
+import 'package:frontend/screen/LoginPage/FindPasswd.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -161,6 +163,10 @@ class _LoginState extends State<Login> {
                     GestureDetector(
                       onTap: () {
                         // 회원가입하기 기능을 수행하는 로직 추가
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => JwtSignUp()),
+                        );
                       },
                       child: Text(
                         '회원가입하기',
@@ -179,6 +185,10 @@ class _LoginState extends State<Login> {
                 GestureDetector(
                   onTap: () {
                     // 비밀번호 찾기 기능을 수행하는 로직 추가
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FindPasswd()),
+                    );
                   },
                   child: Text(
                     '비밀번호 찾기',
