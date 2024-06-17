@@ -2,8 +2,8 @@ from .serializers import *
 from .models import *
 from .permissions import *
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics
+from rest_framework import status, generics
+from rest_framework.permissions import IsAuthenticated
 
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
@@ -33,3 +33,24 @@ class AddInfoView(generics.RetrieveUpdateAPIView):
     serializer_class = UserInfoSerializer
     queryset = UserExtra.objects.all()
     permission_classes = [CustomReadOnly]
+
+
+class MypageView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        serializer = LoginSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    """
+    def put(self, request):
+        user = request.user
+        serializer = LoginSerializer(user, data= request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """
+
