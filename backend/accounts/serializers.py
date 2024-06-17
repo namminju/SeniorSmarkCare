@@ -68,5 +68,5 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserExtra
         fields = [
-            'userBirth', 'userGender', 'guardPhone',
+            'userBirth', 'userGender', 'guardPhone', 'height', 'weight',
         ]
