@@ -1,5 +1,5 @@
 from .serializers import *
-from .models import User
+from .models import *
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
@@ -28,4 +28,13 @@ class LoginView(generics.GenericAPIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-         
+class AddInfoView(generics.CreateAPIView):
+    serializer_class = UserInfoSerializer
+    def post(self, request):
+        queryset = UserExtra.objects.all()
+        try:
+            serializer = self.get_serializer(data = request.data)
+            serializer.save()
+            return Response({"info Added successfully"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error" : str(e)}, status=status.HTTP_400_BAD_REQUEST)

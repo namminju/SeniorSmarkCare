@@ -1,4 +1,4 @@
-from .models import User
+from .models import *
 from django.contrib.auth.password_validation import validate_password # Django의 기본 pw 검증 도구
 
 from rest_framework.validators import UniqueValidator
@@ -63,3 +63,10 @@ class LoginSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             {"error" : "No users able to log in with provided credentials"}
         )
+    
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserExtra
+        fields = [
+            'userBirth', 'userGender', 'guardPhone',
+        ]

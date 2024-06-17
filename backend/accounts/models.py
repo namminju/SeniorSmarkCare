@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Permission, Group
 from django.core.validators import RegexValidator
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -39,14 +42,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid phone number')]
     )
-    userBirth = models.DateField(null = True, blank = True)
-    userGender = models.CharField(max_length=30, null = True, blank=True)
-    guardPhone = models.CharField(
-        max_length=11,
-        null=True,
-        blank=True,
-        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid phone number')]
-    )
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
@@ -61,3 +56,21 @@ def has_perm(self, perm, obj=None):
 
 def has_module_perms(self, app_label):
     return self.is_superuser
+
+
+class UserExtra(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    #primary_key를 User의 pk로 설정하여 통합적으로 관리
+    userBirth = models.DateField(null = True, blank = True)
+    userGender = models.CharField(max_length=30, null = True, blank=True)
+    guardPhone = models.CharField(
+        max_length=11,
+        null=True,
+        blank=True,
+        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid phone number')]
+    )
+
+@receiver(post_save, sender = User)
+def create_user_info(sender, instance, created, **kwargs):
+    if created:
+        UserExtra.objects.create(user = instance)
