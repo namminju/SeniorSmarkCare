@@ -75,6 +75,8 @@ class UserExtra(models.Model):
         blank=True,
         validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid phone number')]
     )
+    height = models.IntegerField(null=True, blank=True)
+    weight = models.IntegerField(null=True, blank=True)
 
 @receiver(post_save, sender = User)
 def create_user_info(sender, instance, created, **kwargs):
