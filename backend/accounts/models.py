@@ -59,10 +59,16 @@ def has_module_perms(self, app_label):
 
 
 class UserExtra(models.Model):
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     #primary_key를 User의 pk로 설정하여 통합적으로 관리
     userBirth = models.DateField(null = True, blank = True)
-    userGender = models.CharField(max_length=30, null = True, blank=True)
+    userGender = models.CharField(max_length=6, choices=GENDER_CHOICES, null = True, blank=True)
     guardPhone = models.CharField(
         max_length=11,
         null=True,
