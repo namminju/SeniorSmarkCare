@@ -96,6 +96,7 @@ class _ExercisePage extends State<Exercisepage> {
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(),
+        backgroundColor: Colors.white,
         body: Column(
           children: [
             const SizedBox(height: 12),

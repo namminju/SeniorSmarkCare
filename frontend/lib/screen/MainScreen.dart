@@ -4,7 +4,10 @@ import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
 import 'package:frontend/screen/MealPage/MealRecommend.dart';
 import 'package:frontend/screen/MealPage/MealTime.dart';
+import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 
+import 'package:frontend/screen/MyPage/Mypage.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -24,21 +27,18 @@ class _MainScreen extends State<MainScreen> {
       // 안전한 영역의 확보
       child: Scaffold(
         appBar: PreferredSize(
-
           preferredSize: Size.fromHeight(height * 0.2),
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               AppBar(
-                title: Text('홀로똑똑'),
+                title: const Text('홀로똑똑'),
                 backgroundColor: Colors.transparent,
                 leading: Container(), // 앱 바 좌측에 있는 버튼 지우는 효과 -> 뒤로 가기 같은 거
-             ),
+              ),
               Image.asset(
                 'images/mainIcon.png',
                 width: width * 0.2,
-
               ),
             ],
           ),
@@ -51,15 +51,23 @@ class _MainScreen extends State<MainScreen> {
             Center(
                 child: Row(
               children: [
-                Padding(padding: EdgeInsets.all(10)),
+                const Padding(padding: EdgeInsets.all(10)),
                 Image.asset(
                   'images/mainPageImg/grandma.png',
                   width: width * 0.1,
                 ),
-                Padding(padding: EdgeInsets.all(5)),
-                Text(
+                const Padding(padding: EdgeInsets.all(5)),
+                InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Mypage()),
+                );
+              },
+                child: const Text(
                   '김박사 님',
                   style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                ),
                 ),
               ],
             )),
@@ -73,8 +81,8 @@ class _MainScreen extends State<MainScreen> {
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
-                      minimumSize: Size(160, 160), // 최소 크기 설정
-                      backgroundColor: Color(0xFFFFCC66), // 배경색 지정
+                      minimumSize: const Size(160, 160), // 최소 크기 설정
+                      backgroundColor: const Color(0xFFFFCC66), // 배경색 지정
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -94,7 +102,7 @@ class _MainScreen extends State<MainScreen> {
                           'images/mainPageImg/healthIcon.png',
                           width: width * 0.15,
                         ),
-                        Text(
+                        const Text(
                           '건강',
                           style: TextStyle(
                               fontSize: 60,
@@ -108,8 +116,8 @@ class _MainScreen extends State<MainScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     // 버튼 스타일 지정
-                    minimumSize: Size(160, 160), // 최소 크기 설정
-                    backgroundColor: Color(0xFF8ED973), // 배경색 지정
+                    minimumSize: const Size(160, 160), // 최소 크기 설정
+                    backgroundColor: const Color(0xFF8ED973), // 배경색 지정
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -117,7 +125,11 @@ class _MainScreen extends State<MainScreen> {
                   ),
                   onPressed: () {
                     // "운동" 버튼이 눌렸을 때 할 일 추가
-                    // 이동할 페이지가 없으므로 일단 비워둡니다.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Exercisepage()),
+                    );
                   },
                   child: Column(
                     children: [
@@ -125,7 +137,7 @@ class _MainScreen extends State<MainScreen> {
                         'images/mainPageImg/exerciseIcon.png',
                         width: width * 0.15,
                       ),
-                      Text(
+                      const Text(
                         '운동',
                         style: TextStyle(
                             fontSize: 60,
@@ -147,8 +159,8 @@ class _MainScreen extends State<MainScreen> {
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
-                      minimumSize: Size(160, 160), // 최소 크기 설정
-                      backgroundColor: Color(0xFFFF9966), // 배경색 지정
+                      minimumSize: const Size(160, 160), // 최소 크기 설정
+                      backgroundColor: const Color(0xFFFF9966), // 배경색 지정
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -156,14 +168,18 @@ class _MainScreen extends State<MainScreen> {
                     ),
                     onPressed: () {
                       // "식사" 버튼이 눌렸을 때 할 일 추가
-                      // 이동할 페이지가 없으므로 일단 비워둡니다.
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MealRecommend()),
+                      );
                     },
                     child: Column(children: [
                       Image.asset(
                         'images/mainPageImg/mealIcon.png',
                         width: width * 0.15,
                       ),
-                      Text(
+                      const Text(
                         '식사',
                         style: TextStyle(
                             fontSize: 60,
@@ -177,8 +193,8 @@ class _MainScreen extends State<MainScreen> {
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
 
-                      minimumSize: Size(160, 160), // 최소 크기 설정
-                      backgroundColor: Color(0xFFA1DCFF), // 배경색 지정
+                      minimumSize: const Size(160, 160), // 최소 크기 설정
+                      backgroundColor: const Color(0xFFA1DCFF), // 배경색 지정
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -197,7 +213,7 @@ class _MainScreen extends State<MainScreen> {
                         'images/mainPageImg/medicalIcon.png',
                         width: width * 0.15,
                       ),
-                      Text(
+                      const Text(
                         '진료',
                         style: TextStyle(
                             fontSize: 60,
@@ -223,7 +239,7 @@ class _MainScreen extends State<MainScreen> {
                         height: width * 0.17,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 170, 170, 170),
+                            color: const Color.fromARGB(255, 170, 170, 170),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
@@ -249,7 +265,7 @@ class _MainScreen extends State<MainScreen> {
                       height: width * 0.17,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 170, 170, 170),
+                          color: const Color.fromARGB(255, 170, 170, 170),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Center(
