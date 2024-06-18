@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 
 class MedicalHistoryAdd extends StatefulWidget {
   @override
@@ -11,21 +12,22 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: Text('비대면 진료 기록'),
-      ),
+      appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+              ),
               Text(
                 '비대면 진료 내역',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 0),
                 child: Container(
                   width: 320,
                   decoration: BoxDecoration(

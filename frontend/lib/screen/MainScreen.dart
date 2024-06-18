@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 
-import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
-import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
-import 'package:frontend/screen/MealPage/MealRecommend.dart';
 import 'package:frontend/screen/MealPage/MealTime.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
+import 'package:frontend/screen/MyPage/Mypage.dart';
+import 'package:frontend/screen/LoginPage/Login.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,105 +17,100 @@ class MainScreen extends StatefulWidget {
 class _MainScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
+    Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
-    double height = screenSize.height; // 상대 수치를 이용하기 위함
 
     return SafeArea(
-      // 안전한 영역의 확보
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(height * 0.2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AppBar(
-                title: const Text('홀로똑똑'),
-                backgroundColor: Colors.transparent,
-                leading: Container(), // 앱 바 좌측에 있는 버튼 지우는 효과 -> 뒤로 가기 같은 거
-              ),
-              Image.asset(
-                'images/mainIcon.png',
-                width: width * 0.2,
-              ),
-            ],
-          ),
-        ),
+        appBar: const CustomAppBar(),
         backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Center(
-                child: Row(
-              children: [
-                const Padding(padding: EdgeInsets.all(10)),
-                Image.asset(
-                  'images/mainPageImg/grandma.png',
-                  width: width * 0.1,
-                ),
-                const Padding(padding: EdgeInsets.all(5)),
-                const Text(
-                  '김박사 님',
-                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                ),
-              ],
-            )),
+              child: Row(
+                children: [
+                  const Padding(padding: EdgeInsets.all(10)),
+                  Image.asset(
+                    'images/mainPageImg/grandma.png',
+                    width: width * 0.1,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Mypage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      '김박사 님',
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(width * 0.03),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // SymtomHistory 페이지로 이동하는 버튼
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      // 버튼 스타일 지정
-                      minimumSize: const Size(160, 160), // 최소 크기 설정
-                      backgroundColor: const Color(0xFFFFCC66), // 배경색 지정
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 4,
-                    ),
-                    onPressed: () {
-                      // SymtomHistory 페이지로 이동
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SymtomHistory()),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'images/mainPageImg/healthIcon.png',
-                          width: width * 0.15,
-                        ),
-                        const Text(
-                          '건강',
-                          style: TextStyle(
-                              fontSize: 60,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                      ],
-                    )),
-
-                // MedicalHistory 페이지로 이동하는 버튼
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    // 버튼 스타일 지정
-                    minimumSize: const Size(160, 160), // 최소 크기 설정
-                    backgroundColor: const Color(0xFF8ED973), // 배경색 지정
+                    minimumSize: const Size(160, 160),
+                    backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
-                    // "운동" 버튼이 눌렸을 때 할 일 추가
-                    // 이동할 페이지가 없으므로 일단 비워둡니다.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SymtomHistory()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'images/mainPageImg/healthIcon.png',
+                        width: width * 0.15,
+                      ),
+                      const Text(
+                        '건강',
+                        style: TextStyle(
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(160, 160),
+                    backgroundColor: const Color(0xFF8ED973),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Exercisepage()),
+                    );
                   },
                   child: Column(
                     children: [
@@ -126,9 +121,10 @@ class _MainScreen extends State<MainScreen> {
                       const Text(
                         '운동',
                         style: TextStyle(
-                            fontSize: 60,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -141,76 +137,101 @@ class _MainScreen extends State<MainScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // SymtomHistory 페이지로 이동하는 버튼
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      // 버튼 스타일 지정
-                      minimumSize: const Size(160, 160), // 최소 크기 설정
-                      backgroundColor: const Color(0xFFFF9966), // 배경색 지정
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 4,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(160, 160),
+                    backgroundColor: const Color(0xFFFF9966),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {
-                      // "식사" 버튼이 눌렸을 때 할 일 추가
-                      // 이동할 페이지가 없으므로 일단 비워둡니다.
-                    },
-                    child: Column(children: [
-                      Image.asset(
-                        'images/mainPageImg/mealIcon.png',
-                        width: width * 0.15,
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MealTime()),
+                    );
+                  },
+                  child: Column(children: [
+                    Image.asset(
+                      'images/mainPageImg/mealIcon.png',
+                      width: width * 0.15,
+                    ),
+                    const Text(
+                      '식사',
+                      style: TextStyle(
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      const Text(
-                        '식사',
-                        style: TextStyle(
-                            fontSize: 60,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    ])),
-
-                // MedicalHistory 페이지로 이동하는 버튼
+                    ),
+                  ]),
+                ),
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      // 버튼 스타일 지정
-
-                      minimumSize: const Size(160, 160), // 최소 크기 설정
-                      backgroundColor: const Color(0xFFA1DCFF), // 배경색 지정
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 4,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(160, 160),
+                    backgroundColor: const Color(0xFFA1DCFF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {
-                      // MedicalHistory 페이지로 이동
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MedicalHistory()),
-                      );
-                    },
-                    child: Column(children: [
-                      Image.asset(
-                        'images/mainPageImg/medicalIcon.png',
-                        width: width * 0.15,
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MedicalHistory()),
+                    );
+                  },
+                  child: Column(children: [
+                    Image.asset(
+                      'images/mainPageImg/medicalIcon.png',
+                      width: width * 0.15,
+                    ),
+                    const Text(
+                      '진료',
+                      style: TextStyle(
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      const Text(
-                        '진료',
-                        style: TextStyle(
-                            fontSize: 60,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    ])),
+                    ),
+                  ]),
+                ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.all(width * 0.08),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(20, 20),
+                backgroundColor: Colors.blueGrey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
+              },
+              child: Column(
+                children: [
+                  const Text(
+                    '원하는 이름',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.08), // 양 옆에 10.0의 간격을 설정합니다.
+              padding: EdgeInsets.all(width * 0.05),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.08),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -235,9 +256,10 @@ class _MainScreen extends State<MainScreen> {
                       Text(
                         '상담전화',
                         style: TextStyle(
-                            fontSize: width * 0.04,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: width * 0.04,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       )
                     ],
                   ),
@@ -261,13 +283,17 @@ class _MainScreen extends State<MainScreen> {
                     Text(
                       '문의하기',
                       style: TextStyle(
-                          fontSize: width * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: width * 0.04,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     )
                   ])
                 ],
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(width * 0.02),
             ),
           ],
         ),

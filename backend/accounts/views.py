@@ -1,39 +1,56 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from .models import User
-from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from .serializers import *
+from .models import *
+from .permissions import *
+from rest_framework.response import Response
+from rest_framework import status, generics
+from rest_framework.permissions import IsAuthenticated
 
-def signup(request):
-    if request.method == 'POST':
-        userName = request.POST.get('userName')
-        userPhone = request.POST.get('userPhone')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-
-        if not userName or not userPhone or not password1 or not password2:
-            return render(request, 'signup.html', {'error': "All fields are required."})
-        
-        if password1 != password2:
-            return render(request, 'signup.html', {'error': "Passwords don't match"})
-        
-        # Validate phone number
-        phone_validator = RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid phone number')
+class SignupView(generics.CreateAPIView):
+    serializer_class = SignupSerializer
+    def post(self, request):
         try:
-            phone_validator(userPhone)
-        except ValidationError as e:
-            return render(request, 'signup.html', {'error': e.message})
-        
-        # Create user
-        try:
-            user = User.objects.create_user(
-                userName=userName,
-                userPhone=userPhone,
-                password=password1,
-            )
-            login(request, user)
-            return redirect('/')
+            queryset = User.objects.all()
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return render(request, 'signup.html', {'error': str(e)})
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    return render(request, 'signup.html')
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    def post(self, request):
+        try:
+            serializer = self.get_serializer(data = request.data)
+            serializer.is_valid(raise_exception = True)
+            token = serializer.validated_data
+            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class AddInfoView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserInfoSerializer
+    queryset = UserExtra.objects.all()
+    permission_classes = [CustomReadOnly]
+
+
+class MypageView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        serializer = LoginSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    """
+    def put(self, request):
+        user = request.user
+        serializer = LoginSerializer(user, data= request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """
+

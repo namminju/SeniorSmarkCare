@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     'drf_yasg',
     'rest_framework',
+    'rest_framework.authtoken',
+    'meal'
 ]
 
 MIDDLEWARE = [
@@ -108,6 +110,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # 사용할 인증 방법 추가
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # 기본 권한 설정
+    ],
+}
 
 LANGUAGE_CODE = 'en-us'
 
