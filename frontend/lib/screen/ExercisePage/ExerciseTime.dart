@@ -18,7 +18,6 @@ class _ExerciseTime extends State<ExerciseTime> {
       //안전한 영역의 확보
       child: Scaffold(
         appBar: const CustomAppBar(),
-        backgroundColor: Colors.white,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
