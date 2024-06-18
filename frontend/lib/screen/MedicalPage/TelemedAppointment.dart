@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/PageNavigationBigButton.dart';
 import './MedicalHistory.dart'; // MedicalHistory 페이지 import
+import 'package:frontend/widget/AppBar.dart';
 
 class TelemedAppointment extends StatelessWidget {
   @override
@@ -11,9 +12,7 @@ class TelemedAppointment extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        appBar: AppBar(
-          title: Text('비대면 진료'),
-        ),
+        appBar: const CustomAppBar(),
         body: Center(
             child: Column(
           children: [
@@ -126,7 +125,7 @@ class TelemedAppointment extends StatelessWidget {
                   Text(
                     '진료 종료',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -134,8 +133,8 @@ class TelemedAppointment extends StatelessWidget {
                   SizedBox(width: 8), // 텍스트와 이미지 사이의 간격 조절
                   Image.asset(
                     'images/medicalImg/call-slash.png', // 이미지 경로
-                    height: 20, // 이미지 높이
-                    width: 20, // 이미지 너비
+                    height: 25, // 이미지 높이
+                    width: 25, // 이미지 너비
                   ),
                 ],
               ),

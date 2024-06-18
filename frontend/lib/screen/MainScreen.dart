@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 
-import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
-import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
-import 'package:frontend/screen/MealPage/MealRecommend.dart';
 import 'package:frontend/screen/MealPage/MealTime.dart';
 import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 
+import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
+import 'package:frontend/screen/LoginPage/Login.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,12 +20,10 @@ class MainScreen extends StatefulWidget {
 class _MainScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
+    Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
-    double height = screenSize.height; // 상대 수치를 이용하기 위함
 
     return SafeArea(
-      // 안전한 영역의 확보
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(height * 0.2),
@@ -43,12 +42,14 @@ class _MainScreen extends State<MainScreen> {
             ],
           ),
         ),
+
         backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Center(
+
                 child: Row(
               children: [
                 const Padding(padding: EdgeInsets.all(10)),
@@ -77,7 +78,6 @@ class _MainScreen extends State<MainScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // SymtomHistory 페이지로 이동하는 버튼
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
@@ -109,22 +109,26 @@ class _MainScreen extends State<MainScreen> {
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
                         ),
-                      ],
-                    )),
-
-                // MedicalHistory 페이지로 이동하는 버튼
+                      ),
+                    ],
+                  ),
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    // 버튼 스타일 지정
-                    minimumSize: const Size(160, 160), // 최소 크기 설정
-                    backgroundColor: const Color(0xFF8ED973), // 배경색 지정
+
+                    minimumSize: const Size(160, 160),
+                    backgroundColor: const Color(0xFF8ED973),
+
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
+
                     // "운동" 버튼이 눌렸을 때 할 일 추가
+
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -140,9 +144,10 @@ class _MainScreen extends State<MainScreen> {
                       const Text(
                         '운동',
                         style: TextStyle(
-                            fontSize: 60,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -155,8 +160,8 @@ class _MainScreen extends State<MainScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // SymtomHistory 페이지로 이동하는 버튼
                 ElevatedButton(
+
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
                       minimumSize: const Size(160, 160), // 최소 크기 설정
@@ -185,11 +190,13 @@ class _MainScreen extends State<MainScreen> {
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
-                      ),
-                    ])),
 
-                // MedicalHistory 페이지로 이동하는 버튼
+                      ),
+                    ),
+                  ]),
+                ),
                 ElevatedButton(
+
                     style: ElevatedButton.styleFrom(
                       // 버튼 스타일 지정
 
@@ -219,16 +226,46 @@ class _MainScreen extends State<MainScreen> {
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
+
                       ),
-                    ])),
+                    ),
+                  ]),
+                ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.all(width * 0.08),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(20, 20),
+                backgroundColor: Colors.blueGrey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                );
+              },
+              child: Column(
+                children: [
+                  const Text(
+                    '원하는 이름',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.08), // 양 옆에 10.0의 간격을 설정합니다.
+              padding: EdgeInsets.all(width * 0.05),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.08),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -253,9 +290,10 @@ class _MainScreen extends State<MainScreen> {
                       Text(
                         '상담전화',
                         style: TextStyle(
-                            fontSize: width * 0.04,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                          fontSize: width * 0.04,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       )
                     ],
                   ),
@@ -279,13 +317,17 @@ class _MainScreen extends State<MainScreen> {
                     Text(
                       '문의하기',
                       style: TextStyle(
-                          fontSize: width * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: width * 0.04,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     )
                   ])
                 ],
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(width * 0.02),
             ),
           ],
         ),

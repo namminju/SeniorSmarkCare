@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './SymtomCategory.dart';
 import './SymtomHistoryAdd.dart';
 import '../../widgets/PageNavigationBigButton.dart';
+import 'package:frontend/widget/AppBar.dart';
 
 class SymtomHistory extends StatefulWidget {
   @override
@@ -18,9 +19,7 @@ class _SymtomHistory extends State<SymtomHistory> {
       //안전한 영역의 확보
       child: Scaffold(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        appBar: AppBar(
-          title: Text('건강 기록'),
-        ),
+        appBar: const CustomAppBar(),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -91,8 +90,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(vertical: 3),
                               child: Text(
                                 '머리 급성 두통',
                                 style: TextStyle(
@@ -102,8 +100,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(vertical: 3),
                               child: Text(
                                 '상체-심잠통증',
                                 style: TextStyle(
@@ -115,7 +112,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 3),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -162,7 +159,7 @@ class _SymtomHistory extends State<SymtomHistory> {
                             '혹시 더 아픈 부위가 있으신가요?',
                             style: TextStyle(
                               fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),

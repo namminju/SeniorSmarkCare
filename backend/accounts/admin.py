@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-from .models import User
+from .models import *
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -13,14 +13,20 @@ class UserAdmin(BaseUserAdmin):
     )
     fieldsets = (
         (None, {'fields': ('userName', 'userPhone', 'password')}),
-        ('Personal info', {'fields': ('userBirth', 'userGender', 'userType', 'guardPhone')}),
-        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login',)}),
-        ('Alarm Counts', {'fields': ('mealAlarmCnt', 'exerciseAlarmCnt')}),
+        ('Permissions', {'fields': ('is_superuser','is_staff',)}),
     )
-    list_display = ('userName', 'userPhone', 'is_admin')
+    list_display = ('userName', 'userPhone', 'is_superuser')
+    list_filter = ('is_superuser', 'is_staff')
     search_fields = ('userName', 'userPhone')
     ordering = ('userName',)
+
+class UserExtraInline(admin.StackedInline):
+    model = UserExtra
+    can_delete = False
+    verbose_name_plural = "UserInfo"
+
+class UserAdmin(UserAdmin):
+    inlines = [UserExtraInline]
 
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
