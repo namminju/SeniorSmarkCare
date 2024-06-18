@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Mypage extends StatefulWidget {
+  const Mypage({super.key});
+
   @override
   _Mypage createState() => _Mypage();
 }
@@ -16,9 +18,9 @@ class _Mypage extends State<Mypage> {
       //안전한 영역의 확보
       child: Scaffold(
         appBar: AppBar(
-          title: Text('마이페이지'),
+          title: const Text('마이페이지'),
         ),
-        body: Column(),
+        body: const Column(),
       ),
     );
   }
