@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'multiselectfield',
     'meal',
     'disease',
+    'exercise'
 ]
 
 MIDDLEWARE = [
