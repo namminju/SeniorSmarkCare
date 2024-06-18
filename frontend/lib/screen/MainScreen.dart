@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
 
 import 'package:frontend/screen/MealPage/MealTime.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
@@ -106,6 +105,7 @@ class _MainScreen extends State<MainScreen> {
                     elevation: 4,
                   ),
                   onPressed: () {
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
