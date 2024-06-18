@@ -47,14 +47,14 @@ class SignupSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.ModelSerializer):
     userName = serializers.CharField(required = True)
     password = serializers.CharField(required = True, write_only = True)
-    userPhone = serializers.CharField()
+    userPhone = serializers.CharField(read_only = True)
 
     class Meta:
         model = User
         fields = [
             'id', 'userName', 'userPhone', 'password',
         ]
-    
+
     def validate(self, data):
         user = authenticate(**data)
         if user:
@@ -63,6 +63,9 @@ class LoginSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             {"error" : "No users able to log in with provided credentials"}
         )
+
+    
+
     
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:

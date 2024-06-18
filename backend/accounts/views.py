@@ -3,23 +3,27 @@ from .models import *
 from .permissions import *
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
+    permission_classes = [AllowAny]
     def post(self, request):
         try:
             queryset = User.objects.all()
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"message": "User created successfully", "token": token.key}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         try:
             serializer = self.get_serializer(data = request.data)
@@ -28,6 +32,7 @@ class LoginView(generics.GenericAPIView):
             return Response({"token": token.key}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class AddInfoView(generics.RetrieveUpdateAPIView):
     serializer_class = UserInfoSerializer
