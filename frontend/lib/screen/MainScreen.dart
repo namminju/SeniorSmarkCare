@@ -6,6 +6,7 @@ import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
+import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -105,7 +106,6 @@ class _MainScreen extends State<MainScreen> {
                     elevation: 4,
                   ),
                   onPressed: () {
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(

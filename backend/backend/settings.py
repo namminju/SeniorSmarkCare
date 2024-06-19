@@ -47,9 +47,11 @@ INSTALLED_APPS = [
     'meal',
     'disease',
     'exercise',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +61,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:54397' ,'http://localhost:54397']
+CORS_ALLOW_CREDENTIALS = True
+
+CSP_DEFAULT_SRC = ["'self'"]
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
