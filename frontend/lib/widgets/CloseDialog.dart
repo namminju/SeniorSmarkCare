@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../widgets/PageNavigationBigButton.dart';
-import 'package:frontend/screen/MyPage/Mypage.dart';
 
-class NoticeDialog extends StatelessWidget {
+class CloseDialog extends StatelessWidget {
   final String text;
   final VoidCallback? onConfirm;
   final String? nextPageName; // 다음 페이지 이름을 저장할 변수 추가
 
-  const NoticeDialog(
+  const CloseDialog(
       {Key? key, required this.text, this.onConfirm, this.nextPageName})
       : super(key: key);
 
@@ -59,9 +57,26 @@ class NoticeDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
             ),
-            PageNavigationBigButton(
-              buttonText: '확인',
-              nextPage: Mypage(), // MedicalHistory 페이지로 이동
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFFEB2B2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 4, // 그림자 높이 조정
+                minimumSize: Size(240, 44), // 최소 크기 설정
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                '확인', // 외부에서 받은 버튼 텍스트 사용
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
             )
           ],
         ),

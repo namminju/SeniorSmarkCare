@@ -1,23 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
-import 'package:frontend/screen/MealPage/MealRecommend.dart';
-import 'package:frontend/widget/AppBar.dart';
-
 import 'package:frontend/screen/MealPage/MealTime.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
 import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  _MainScreen createState() => _MainScreen();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreen extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> {
+  String username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> header = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      print('token: $token');
+      print('$header');
+      try {
+        var response = await http.get(
+            Uri.parse('${RootUrlProvider.baseURL}/accounts/mypage/'),
+            headers: header);
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          print('$userData');
+          setState(() {
+            username = userData['userName']; // 수정: 사용자 이름 업데이트
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // 실패 처리 로직 추가
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // 예외 처리 로직 추가
+      }
+    } else {
+      print('Token not found');
+      // 토큰 없음 처리 로직 추가
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -25,7 +70,15 @@ class _MainScreen extends State<MainScreen> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: AppBar(
+          title: Text('메인 화면'),
+          leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,12 +87,12 @@ class _MainScreen extends State<MainScreen> {
             Center(
               child: Row(
                 children: [
-                  const Padding(padding: EdgeInsets.all(10)),
+                  Padding(padding: EdgeInsets.all(10)),
                   Image.asset(
                     'images/mainPageImg/grandma.png',
                     width: width * 0.1,
                   ),
-                  const Padding(padding: EdgeInsets.all(5)),
+                  Padding(padding: EdgeInsets.all(5)),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -49,8 +102,8 @@ class _MainScreen extends State<MainScreen> {
                         ),
                       );
                     },
-                    child: const Text(
-                      '김박사 님',
+                    child: Text(
+                      username.isNotEmpty ? '$username님' : '사용자 이름 없음',
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
@@ -68,8 +121,8 @@ class _MainScreen extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
-                    backgroundColor: const Color(0xFFFFCC66),
+                    minimumSize: Size(160, 160),
+                    backgroundColor: Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -87,7 +140,7 @@ class _MainScreen extends State<MainScreen> {
                         'images/mainPageImg/healthIcon.png',
                         width: width * 0.15,
                       ),
-                      const Text(
+                      Text(
                         '건강',
                         style: TextStyle(
                           fontSize: 60,
@@ -98,98 +151,30 @@ class _MainScreen extends State<MainScreen> {
                     ],
                   ),
                 ),
-                // exercise
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
-                    backgroundColor: const Color(0xFF8ED973),
+                    minimumSize: Size(160, 160),
+                    backgroundColor: Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentPadding: const EdgeInsets.all(20),
-                          insetPadding: EdgeInsets.zero,
-                          backgroundColor: const Color(0XFFF0F0F0),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Center(
-                                    child: Text(
-                                      '               운동',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('X'),
-                                  ),
-                                ],
-                              ),
-                              Divider(color: Colors.grey[600]),
-                              ListTile(
-                                title: const Center(
-                                  child: Text('운동 시간 설정',
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ExerciseTime()),
-                                  );
-                                },
-                              ),
-                              Divider(color: Colors.grey[400]),
-                              ListTile(
-                                title: const Center(
-                                  child: Text('운동 보기',
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Exercisepage()),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Exercisepage()), // 수정: Exercisepage -> ExercisePage
                     );
-                  }, //
+                  },
                   child: Column(
                     children: [
                       Image.asset(
                         'images/mainPageImg/exerciseIcon.png',
                         width: width * 0.15,
                       ),
-                      const Text(
+                      Text(
                         '운동',
                         style: TextStyle(
                           fontSize: 60,
@@ -210,83 +195,17 @@ class _MainScreen extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
-                    backgroundColor: const Color(0xFFFF9966),
+                    minimumSize: Size(160, 160),
+                    backgroundColor: Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentPadding: const EdgeInsets.all(20),
-                          insetPadding: EdgeInsets.zero,
-                          backgroundColor: const Color(0XFFF0F0F0),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    '               식사',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('X'),
-                                  ),
-                                ],
-                              ),
-                              Divider(color: Colors.grey[600]),
-                              ListTile(
-                                title: const Center(
-                                  child: Text('식사 시간 알림',
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const MealTime()),
-                                  );
-                                },
-                              ),
-                              Divider(color: Colors.grey[400]),
-                              ListTile(
-                                title: const Center(
-                                  child: Text('식단 추천',
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MealRecommend()),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MealTime()),
                     );
                   },
                   child: Column(children: [
@@ -294,7 +213,7 @@ class _MainScreen extends State<MainScreen> {
                       'images/mainPageImg/mealIcon.png',
                       width: width * 0.15,
                     ),
-                    const Text(
+                    Text(
                       '식사',
                       style: TextStyle(
                         fontSize: 60,
@@ -304,11 +223,10 @@ class _MainScreen extends State<MainScreen> {
                     ),
                   ]),
                 ),
-                //
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
-                    backgroundColor: const Color(0xFFA1DCFF),
+                    minimumSize: Size(160, 160),
+                    backgroundColor: Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -325,7 +243,7 @@ class _MainScreen extends State<MainScreen> {
                       'images/mainPageImg/medicalIcon.png',
                       width: width * 0.15,
                     ),
-                    const Text(
+                    Text(
                       '진료',
                       style: TextStyle(
                         fontSize: 60,
@@ -339,7 +257,7 @@ class _MainScreen extends State<MainScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size(20, 20),
+                minimumSize: Size(160, 40),
                 backgroundColor: Colors.blueGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -352,17 +270,13 @@ class _MainScreen extends State<MainScreen> {
                   MaterialPageRoute(builder: (context) => Login()),
                 );
               },
-              child: const Column(
-                children: [
-                  Text(
-                    '원하는 이름',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              child: Text(
+                '로그인 화면으로',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
             ),
             Padding(
@@ -380,7 +294,7 @@ class _MainScreen extends State<MainScreen> {
                         height: width * 0.17,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 170, 170, 170),
+                            color: Color.fromARGB(255, 170, 170, 170),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
@@ -407,7 +321,7 @@ class _MainScreen extends State<MainScreen> {
                       height: width * 0.17,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 170, 170, 170),
+                          color: Color.fromARGB(255, 170, 170, 170),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Center(
