@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'meal',
     'disease',
     'exercise',
+    'symtom',
 ]
 
 MIDDLEWARE = [
