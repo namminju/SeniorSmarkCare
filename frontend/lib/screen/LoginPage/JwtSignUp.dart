@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widget/AppBar.dart'; // 예시에 맞춰 변경
-import 'package:frontend/widgets/NoticeDialog.dart'; // 예시에 맞춰 변경
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:frontend/widget/AppBar.dart';
+import 'package:frontend/widgets/NoticeDialog.dart'; // 변경
 import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
+import 'package:frontend/Api/RootUrlProvider.dart';
 
 class JwtSignUp extends StatefulWidget {
   @override
@@ -9,7 +13,11 @@ class JwtSignUp extends StatefulWidget {
 }
 
 class _JwtSignUpState extends State<JwtSignUp> {
-  bool _showPasswordVerification = false;
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController userPhoneController = TextEditingController();
+  TextEditingController passwordController1 = TextEditingController();
+  TextEditingController passwordController2 = TextEditingController();
+
   bool _showPhoneVerification = false;
   bool _isPhoneVerified = false;
 
@@ -29,7 +37,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
       context: context,
       builder: (BuildContext context) {
         return NoticeDialog(
-          text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
+          text: '회원가입이 실패하였습니다. 다시 시도해주세요.',
         );
       },
     );
@@ -40,10 +48,43 @@ class _JwtSignUpState extends State<JwtSignUp> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
 
+    String baseUrl = Provider.of<RootUrlProvider>(context).rootUrl;
+
+    Future<void> sendData(String userName, String userPhone, String password1,
+        String password2) async {
+      var url = Uri.parse(baseUrl + "/accounts/signup/");
+      var body = json.encode({
+        'userName': userName,
+        'userPhone': userPhone,
+        'password1': password1,
+        'password2': password2,
+      });
+
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      print("Sending data to URL: $url");
+      print("Body: $body");
+      var response = await http.post(url, body: body, headers: headers);
+
+      if (response.statusCode == 200) {
+        print('회원가입 성공: ${response.body}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpSuccess()),
+        );
+        // 필요한 추가 처리나 페이지 이동 등을 수행
+      } else {
+        print('회원가입 실패: ${response.statusCode}');
+        _showErrorDialog();
+        // 실패 처리에 대한 다이얼로그 표시 등을 수행
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(), // CustomAppBar()으로 변경
+        appBar: AppBar(),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -73,6 +114,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             alignment: Alignment.centerRight,
                             children: [
                               TextField(
+                                controller: userNameController, // 컨트롤러 할당
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -96,6 +138,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             alignment: Alignment.centerRight,
                             children: [
                               TextField(
+                                controller: userPhoneController, // 컨트롤러 할당
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -210,6 +253,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               alignment: Alignment.centerRight,
                               children: [
                                 TextField(
+                                  controller: passwordController1,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -241,6 +285,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               alignment: Alignment.centerRight,
                               children: [
                                 TextField(
+                                  controller: passwordController2,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -275,14 +320,20 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              elevation: 4, // 그림자 높이 조정
+                              elevation: 4,
                             ),
                             onPressed: () {
-                              Navigator.push(
+                              sendData(
+                                  userNameController.text,
+                                  userPhoneController.text,
+                                  passwordController1.text,
+                                  passwordController2.text);
+
+                              /*Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SignUpSuccess()),
-                              );
+                              );*/
                             },
                             child: Container(
                               width: 320,
