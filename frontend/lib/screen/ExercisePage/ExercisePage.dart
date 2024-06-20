@@ -10,56 +10,196 @@ class ExercisePhoto extends StatefulWidget {
 }
 
 class _ExercisePhotoState extends State<ExercisePhoto> {
-  bool _showImageA = false;
-  bool _showImageB = false;
-  bool _showImageC = false;
+  int _selectedIndex = -1;
 
-  void _toggleImageA() {
+  void _toggleImage(int index) {
     setState(() {
-      _showImageA = !_showImageA;
-    });
-  }
-
-  void _toggleImageB() {
-    setState(() {
-      _showImageB = !_showImageB;
-    });
-  }
-
-  void _toggleImageC() {
-    setState(() {
-      _showImageC = !_showImageC;
+      _selectedIndex = _selectedIndex == index ? -1 : index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: const Text('a', style: TextStyle(fontSize: 24)),
-          onTap: _toggleImageA,
-        ),
-        if (_showImageA)
-          Image.network(
-              'images/exerciseImg/exercisePic1.png'), // A 이미지 URL을 여기에 넣으세요
+    return Container(
+      color: Colors.white,
+      child: ListView(
+        children: [
+          ListTile(
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('앉아서 하는 근력운동 ∇',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    )),
+                Divider(
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ],
+            ),
+            onTap: () => _toggleImage(0),
+          ),
+          if (_selectedIndex == 0)
+            Container(
+              margin: const EdgeInsets.all(4),
+              // decoration: BoxDecoration(
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.5),
+              //       spreadRadius: 5,
+              //       blurRadius: 7,
+              //       offset: const Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Image.asset('images/exerciseImg/exercisePic1.png',
+                  fit: BoxFit.cover),
+            ), // A 이미지 URL을 여기에 넣으세요
 
-        ListTile(
-          title: const Text('b', style: TextStyle(fontSize: 24)),
-          onTap: _toggleImageB,
-        ),
-        if (_showImageB)
-          Image.network(
-              'images/exerciseImg/exercisePic2.png'), // B 이미지 URL을 여기에 넣으세요
+          ListTile(
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('의자를 이용하는 근력운동 1 ∇',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    )),
+                Divider(
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ],
+            ),
+            onTap: () => _toggleImage(1),
+          ),
+          if (_selectedIndex == 1)
+            Container(
+              margin: const EdgeInsets.all(4),
+              // decoration: BoxDecoration(
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(1),
+              //       spreadRadius: 2,
+              //       blurRadius: 5,
+              //       offset: const Offset(0, 2),
+              //     ),
+              //   ],
+              // ),
+              child: Image.asset('images/exerciseImg/exercisePic2.png',
+                  fit: BoxFit.cover),
+            ), // B 이미지 URL을 여기에 넣으세요
 
-        ListTile(
-          title: const Text('c', style: TextStyle(fontSize: 24)),
-          onTap: _toggleImageC,
-        ),
-        if (_showImageC)
-          Image.network(
-              'images/mealImg/exercisePic.png'), // C 이미지 URL을 여기에 넣으세요
-      ],
+          ListTile(
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('의자를 이용하는 근력운동 2 ∇',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    )),
+                Divider(
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ],
+            ),
+            onTap: () => _toggleImage(2),
+          ),
+          if (_selectedIndex == 2)
+            Container(
+              margin: const EdgeInsets.all(4),
+              // decoration: BoxDecoration(
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.5),
+              //       spreadRadius: 5,
+              //       blurRadius: 7,
+              //       offset: const Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Image.asset('images/exerciseImg/exercisePic5.png',
+                  fit: BoxFit.cover), // C 이미지 URL을 여기에 넣으세요
+            ),
+
+          ListTile(
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('의자를 이용하는 근력운동 3 ∇',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    )),
+                Divider(
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ],
+            ),
+            onTap: () => _toggleImage(3),
+          ),
+          if (_selectedIndex == 3)
+            Container(
+              margin: const EdgeInsets.all(4),
+              // decoration: BoxDecoration(
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.5),
+              //       spreadRadius: 5,
+              //       blurRadius: 7,
+              //       offset: const Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Image.asset('images/exerciseImg/exercisePic3.png',
+                  fit: BoxFit.cover), // C 이미지 URL을 여기에 넣으세요
+            ),
+
+          ListTile(
+            title: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('맨몸 뇌신경체조 ∇',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    )),
+                Divider(
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ],
+            ),
+            onTap: () => _toggleImage(4),
+          ),
+          if (_selectedIndex == 4)
+            Container(
+              margin: const EdgeInsets.all(4),
+              // decoration: BoxDecoration(
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.grey.withOpacity(0.5),
+              //       spreadRadius: 5,
+              //       blurRadius: 7,
+              //       offset: const Offset(0, 3),
+              //     ),
+              //   ],
+              // ),
+              child: Image.asset('images/exerciseImg/exercisePic4.png',
+                  fit: BoxFit.cover), // C 이미지 URL을 여기에 넣으세요
+            ),
+        ],
+      ),
     );
   }
 }
@@ -96,6 +236,7 @@ class _ExercisePage extends State<Exercisepage> {
     return SafeArea(
       child: Scaffold(
         appBar: const CustomAppBar(),
+        backgroundColor: Colors.white,
         body: Column(
           children: [
             const SizedBox(height: 12),
