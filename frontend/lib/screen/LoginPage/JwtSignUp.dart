@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:frontend/widget/AppBar.dart';
-import 'package:frontend/widgets/NoticeDialog.dart'; // 변경
+import 'package:frontend/widgets/NoticeDialog.dart';
 import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 
@@ -48,11 +48,10 @@ class _JwtSignUpState extends State<JwtSignUp> {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
 
-    String baseUrl = Provider.of<RootUrlProvider>(context).rootUrl;
+    var url = Uri.parse('${RootUrlProvider.baseURL}/accounts/signup/');
 
     Future<void> sendData(String userName, String userPhone, String password1,
         String password2) async {
-      var url = Uri.parse(baseUrl + "/accounts/signup/");
       var body = json.encode({
         'userName': userName,
         'userPhone': userPhone,
@@ -67,11 +66,12 @@ class _JwtSignUpState extends State<JwtSignUp> {
       print("Body: $body");
       var response = await http.post(url, body: body, headers: headers);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('회원가입 성공: ${response.body}');
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignUpSuccess()),
+          MaterialPageRoute(
+              builder: (context) => SignUpSuccess(userName: userName)),
         );
         // 필요한 추가 처리나 페이지 이동 등을 수행
       } else {
