@@ -38,16 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'holott',
     'accounts',
     'bootstrap4',
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
-    'meal'
+    'multiselectfield',
+    'meal',
+    'disease',
+    'exercise',
+    'symtom',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +62,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:54397' ,'http://localhost:54397']
+CORS_ALLOW_CREDENTIALS = True
+
+CSP_DEFAULT_SRC = ["'self'"]
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
@@ -110,6 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

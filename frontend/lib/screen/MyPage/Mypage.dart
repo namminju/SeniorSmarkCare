@@ -7,6 +7,8 @@ import 'package:frontend/screen/MyPage/ChangeGuardianPhoneNum.dart';
 import 'package:frontend/screen/MyPage/ChangeChronicIll.dart';
 
 class Mypage extends StatefulWidget {
+  const Mypage({super.key});
+
   @override
   _Mypage createState() => _Mypage();
 }
