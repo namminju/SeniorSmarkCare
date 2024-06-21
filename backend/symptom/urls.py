@@ -7,4 +7,5 @@ urlpatterns = [
     path('create/lower_body', LowerBodySymptomCreateView.as_view()),
     path('create/hand_foot', HandFootSymptomCreateView.as_view()),
     path('list/', DailySymptomListView.as_view()),
+    path('<str:category_name>/', CategorySymptomListView.as_view()),
 ]
