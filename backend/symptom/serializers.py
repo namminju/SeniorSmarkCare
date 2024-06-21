@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DailySymptom, Symptom
+from .models import *
 
 class SymptomSerializer(serializers.ModelSerializer):
     class Meta:
