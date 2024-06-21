@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
 
 class SignUpSuccess extends StatefulWidget {
+  final String userName;
+
+  SignUpSuccess({required this.userName});
+
   @override
   _SignUpSuccessState createState() => _SignUpSuccessState();
 }
@@ -28,7 +32,7 @@ class _SignUpSuccessState extends State<SignUpSuccess> {
                 SizedBox(height: 20),
                 Center(
                   child: Text(
-                    '김도현님,\n홀로똑똑 회원가입에\n성공하셨습니다.',
+                    '${widget.userName}님,\n홀로똑똑 회원가입에\n성공하셨습니다.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,
@@ -37,7 +41,6 @@ class _SignUpSuccessState extends State<SignUpSuccess> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 100), // 버튼 위에 간격 추가
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -69,9 +72,7 @@ class _SignUpSuccessState extends State<SignUpSuccess> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(15),
-                ),
+                SizedBox(height: 15), // 추가 간격
               ],
             ),
           ),
