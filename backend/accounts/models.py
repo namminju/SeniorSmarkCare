@@ -77,6 +77,12 @@ class UserExtra(models.Model):
     )
     height = models.IntegerField(null=True, blank=True)
     weight = models.IntegerField(null=True, blank=True)
+    hospitalCall = models.CharField(
+        max_length=11,
+        null=True,
+        blank=True,
+        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid call number')]
+    )
 
 @receiver(post_save, sender = User)
 def create_user_info(sender, instance, created, **kwargs):

@@ -2,7 +2,6 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import DailySymptom
 from .serializers import *
-from rest_framework.response import Response
 
 class HeadSymptomCreateView(generics.CreateAPIView):
     serializer_class = HeadSymptomSerializer

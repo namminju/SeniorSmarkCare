@@ -74,3 +74,8 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = [
             'userBirth', 'userGender', 'guardPhone', 'height', 'weight',
         ]
+
+class HospitalCallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserExtra
+        fields = ['hospitalCall']
