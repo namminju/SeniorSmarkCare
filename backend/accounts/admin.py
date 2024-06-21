@@ -25,8 +25,15 @@ class UserExtraInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = "UserInfo"
 
+
+class UserExtraInline2(admin.StackedInline):
+    model = UserAddress
+    can_delete = False
+    verbose_name_plural = "UserInfo"
+
+
 class UserAdmin(UserAdmin):
-    inlines = [UserExtraInline]
+    inlines = [UserExtraInline, UserExtraInline2]
 
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
