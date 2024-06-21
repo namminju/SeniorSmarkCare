@@ -11,7 +11,12 @@ class PastDiseaseView(generics.RetrieveUpdateAPIView):
     serializer_class = PastDiseaseSerializer
     queryset = Disease.objects.all()
     permission_classes = [IsAuthenticated]
+    lookup_field = 'user'
+    lookup_url_kwarg = 'user'
 
+    def get_object(self):
+        return Disease.objects.get(user = self.request.user)
+    
     def update(self, request, *args, **kwargs):
         logger.debug(f"Updating PastDisease for request data: {request.data}")
         partial = kwargs.pop('partial', False)
@@ -30,6 +35,11 @@ class CurrentDiseaseView(generics.RetrieveUpdateAPIView):
     serializer_class = CurrentDiseaseSerializer
     queryset = Disease.objects.all()
     permission_classes = [IsAuthenticated]
+    lookup_field = 'user'
+    lookup_url_kwarg = 'user'
+
+    def get_object(self):
+        return Disease.objects.get(user = self.request.user)
 
     def update(self, request, *args, **kwargs):
         logger.debug(f"Updating CurrentDisease for request data: {request.data}")
