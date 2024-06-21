@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import DailySymptom
 from .serializers import *
+from rest_framework.response import Response
 
 class HeadSymptomCreateView(generics.CreateAPIView):
     serializer_class = HeadSymptomSerializer
@@ -38,3 +39,11 @@ class DailySymptomListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return DailySymptom.objects.filter(user=user).order_by('symptom_date')
+    
+class CategorySymptomListView(generics.ListAPIView):
+    serializer_class = SymptomSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        category_name = self.kwargs['category_name'].upper()
+        return Symptom.objects.filter(category__name=category_name)
