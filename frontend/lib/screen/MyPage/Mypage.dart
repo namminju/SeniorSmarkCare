@@ -18,7 +18,7 @@ class _Mypage extends State<Mypage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
     double width = screenSize.width;
-    double height = screenSize.height; // 상대 수치를 이용하기 위함
+    //double height = screenSize.height; // 상대 수치를 이용하기 위함
 
     return SafeArea(
         child: Scaffold(

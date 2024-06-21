@@ -85,29 +85,45 @@ class _MainScreenState extends State<MainScreen> {
             Center(
               child: Row(
                 children: [
-                  const Padding(padding: EdgeInsets.all(10)),
-                  Image.asset(
-                    'images/mainPageImg/grandma.png',
-                    width: width * 0.1,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Mypage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      username.isNotEmpty ? '$username님' : '사용자 이름 없음',
-                      style: const TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
+                  Padding(padding: EdgeInsets.all(10)),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mypage(),
+                          ),
+                        );
+                      },
+                      child: Image.asset(
+                        'images/mainPageImg/grandma.png',
+                        width: width * 0.1,
                       ),
                     ),
                   ),
+                  Padding(padding: EdgeInsets.all(5)),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mypage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        username.isNotEmpty ? '$username님' : '사용자 이름 없음',
+                        style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
