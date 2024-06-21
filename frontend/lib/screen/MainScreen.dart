@@ -136,9 +136,10 @@ class _MainScreenState extends State<MainScreen> {
                   },
                   child: Column(
                     children: [
+                      Padding(padding: EdgeInsets.only(top: width * 0.024)),
                       Image.asset(
                         'images/mainPageImg/healthIcon.png',
-                        width: width * 0.15,
+                        height: width * 0.16,
                       ),
                       Text(
                         '건강',
@@ -170,9 +171,10 @@ class _MainScreenState extends State<MainScreen> {
                   },
                   child: Column(
                     children: [
+                      Padding(padding: EdgeInsets.only(top: width * 0.024)),
                       Image.asset(
                         'images/mainPageImg/exerciseIcon.png',
-                        width: width * 0.15,
+                        height: width * 0.16,
                       ),
                       Text(
                         '운동',
@@ -209,9 +211,10 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                   child: Column(children: [
+                    Padding(padding: EdgeInsets.only(top: width * 0.024)),
                     Image.asset(
                       'images/mainPageImg/mealIcon.png',
-                      width: width * 0.15,
+                      height: width * 0.16,
                     ),
                     Text(
                       '식사',
@@ -239,9 +242,10 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                   child: Column(children: [
+                    Padding(padding: EdgeInsets.only(top: width * 0.024)),
                     Image.asset(
                       'images/mainPageImg/medicalIcon.png',
-                      width: width * 0.15,
+                      height: width * 0.16,
                     ),
                     Text(
                       '진료',
@@ -254,6 +258,9 @@ class _MainScreenState extends State<MainScreen> {
                   ]),
                 ),
               ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(width * 0.04),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
