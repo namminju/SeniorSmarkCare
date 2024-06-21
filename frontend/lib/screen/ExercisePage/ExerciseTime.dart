@@ -291,17 +291,17 @@ class _ExerciseTime extends State<ExerciseTime> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            '모든 시간을 기입해주세요!',
+                            '\n모든 시간을 기입해주세요!',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                                fontSize: 16, fontWeight: FontWeight.w700),
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                       actions: [
                         Container(
-                          width: double.infinity,
-                          height: 50,
+                          width: 240,
+                          height: 44,
                           margin: const EdgeInsets.symmetric(horizontal: 16),
                           child: TextButton(
                             onPressed: () {
@@ -338,13 +338,13 @@ class _ExerciseTime extends State<ExerciseTime> {
               }
             },
             child: Container(
-              height: 50,
-              width: double.infinity,
+              height: 52,
+              width: 320,
               alignment: Alignment.center,
               child: const Text(
                 '저장하기',
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 16,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),

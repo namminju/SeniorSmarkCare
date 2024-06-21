@@ -228,81 +228,35 @@ class Exercisepage extends StatefulWidget {
 }
 
 class _ExercisePage extends State<Exercisepage> {
-  // 상태 변수: 0이면 운동 사진, 1이면 운동 영상
-  int selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: CustomAppBar(),
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedIndex = 0; // 운동 사진을 표시하도록 설정
-                    });
-                  },
-                  child: Text(
-                    "운동 사진",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: selectedIndex == 0
-                          ? const Color.fromARGB(255, 0, 0, 0)
-                          : Colors.grey,
-                      shadows: [
-                        Shadow(
-                          offset: const Offset(1.0, 1.0),
-                          blurRadius: 1.5,
-                          color: selectedIndex == 0
-                              ? const Color.fromARGB(128, 69, 69, 69)
-                              : const Color.fromARGB(128, 56, 56, 56),
-                        ),
-                      ],
+            SizedBox(height: 12),
+            Center(
+              child: Text(
+                "운동 사진",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  shadows: [
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 1.5,
+                      color: Color.fromARGB(128, 69, 69, 69),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 24),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedIndex = 1; // 운동 영상을 표시하도록 설정
-                    });
-                  },
-                  child: Text(
-                    "운동 영상",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: selectedIndex == 1
-                          ? const Color.fromARGB(255, 0, 0, 0)
-                          : Colors.grey,
-                      shadows: [
-                        Shadow(
-                          offset: const Offset(1.0, 1.0),
-                          blurRadius: 1.5,
-                          color: selectedIndex == 1
-                              ? const Color.fromARGB(128, 69, 69, 69)
-                              : const Color.fromARGB(128, 56, 56, 56),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Expanded(
-              child: selectedIndex == 0
-                  ? const ExercisePhoto()
-                  : const ExerciseVideo(),
+              child: ExercisePhoto(),
             ),
           ],
         ),
