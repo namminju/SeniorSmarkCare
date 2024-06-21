@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
         user.save(using = self._db)
         return user
     
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin): #실제 유저 엔티티
     objects = UserManager()
 
     userName = models.CharField(max_length=255, unique=True)

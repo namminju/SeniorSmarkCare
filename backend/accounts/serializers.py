@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.ModelSerializer): #회원가입
     password1 = serializers.CharField(
         write_only=True,
         required=True,
@@ -44,10 +44,10 @@ class SignupSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.ModelSerializer):
-    userName = serializers.CharField(required = True)
-    password = serializers.CharField(required = True, write_only = True)
-    userPhone = serializers.CharField(read_only = True)
+class LoginSerializer(serializers.Serializer):
+    userName = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+    userPhone = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
@@ -56,15 +56,16 @@ class LoginSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
-        user = authenticate(**data)
+        userName = data.get('userName')
+        password = data.get('password')
+        user = authenticate(username=userName, password=password)
         if user:
-            token = Token.objects.get(user = user)
-            return token
-        raise serializers.ValidationError(
-            {"error" : "No users able to log in with provided credentials"}
-        )
-
-    
+            if not user.is_active:
+                raise serializers.ValidationError({"error": "User account is disabled."})
+            token, created = Token.objects.get_or_create(user=user)
+            return {"token": token.key, "user": user}
+        else:
+            raise serializers.ValidationError({"error": "Invalid username/password."})
 
     
 class UserInfoSerializer(serializers.ModelSerializer):

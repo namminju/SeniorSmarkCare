@@ -1,6 +1,5 @@
 from .serializers import *
 from .models import *
-from .permissions import *
 from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -26,18 +25,24 @@ class LoginView(generics.GenericAPIView):
     
     def post(self, request):
         try:
-            serializer = self.get_serializer(data = request.data)
-            serializer.is_valid(raise_exception = True)
-            token = serializer.validated_data
-            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            validated_data = serializer.validated_data
+            return Response({"token": validated_data['token'], "user": validated_data['user'].id}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class AddInfoView(generics.RetrieveUpdateAPIView):
     serializer_class = UserInfoSerializer
     queryset = UserExtra.objects.all()
-    permission_classes = [CustomReadOnly]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'user'
+    lookup_url_kwarg = 'user'
+    
+    def get_object(self):
+        return UserExtra.objects.get(user = self.request.user)
 
 
 class MypageView(generics.GenericAPIView):
