@@ -8,6 +8,8 @@ import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 
 class JwtSignUp extends StatefulWidget {
+  const JwtSignUp({super.key});
+
   @override
   _JwtSignUpState createState() => _JwtSignUpState();
 }
@@ -25,7 +27,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: '전화번호 변경이\n완료되었습니다.',
         );
       },
@@ -36,7 +38,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: '회원가입이 실패하였습니다. 다시 시도해주세요.',
         );
       },
@@ -84,7 +86,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(),
+        appBar: const CustomAppBar(),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -93,7 +95,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '회원가입',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
@@ -115,7 +117,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             children: [
                               TextField(
                                 controller: userNameController, // 컨트롤러 할당
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                   ),
@@ -123,7 +125,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                   fillColor: Color(0xFFF0F0F0),
                                   hintText: '성명',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -131,7 +133,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             ],
                           ),
                         ),
-                        Padding(padding: const EdgeInsets.only(top: 30)),
+                        const Padding(padding: EdgeInsets.only(top: 30)),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Stack(
@@ -139,7 +141,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             children: [
                               TextField(
                                 controller: userPhoneController, // 컨트롤러 할당
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                   ),
@@ -147,7 +149,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                   fillColor: Color(0xFFF0F0F0),
                                   hintText: '전화번호',
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -157,7 +159,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                 padding: const EdgeInsets.only(right: 12.0),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFEB2B2),
+                                    backgroundColor: const Color(0xFFFEB2B2),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -168,7 +170,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                       _showPhoneVerification = true;
                                     });
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 68,
                                     height: 24,
                                     child: Center(
@@ -176,7 +178,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                         _showPhoneVerification
                                             ? '인증 완료'
                                             : '인증하기',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -195,7 +197,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
-                                TextField(
+                                const TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -214,7 +216,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                   padding: const EdgeInsets.only(right: 12.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFFEB2B2),
+                                      backgroundColor: const Color(0xFFFEB2B2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -226,13 +228,13 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                       });
                                       _showConfirmationDialog();
                                     },
-                                    child: Container(
+                                    child: SizedBox(
                                       width: 68,
                                       height: 24,
                                       child: Center(
                                         child: Text(
                                           _isPhoneVerified ? '인증 완료' : '인증하기',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -254,7 +256,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               children: [
                                 TextField(
                                   controller: passwordController1,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
@@ -262,7 +264,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     fillColor: Color(0xFFF0F0F0),
                                     hintText: '비밀번호 설정',
                                   ),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -273,7 +275,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(width * 0.01),
-                            child: Text(
+                            child: const Text(
                               '영어와 숫자로 조합된 비밀번호를 설정해주세요.',
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
@@ -286,7 +288,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               children: [
                                 TextField(
                                   controller: passwordController2,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
@@ -294,7 +296,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     fillColor: Color(0xFFF0F0F0),
                                     hintText: '비밀번호 확인',
                                   ),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -305,18 +307,18 @@ class _JwtSignUpState extends State<JwtSignUp> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(width * 0.01),
-                            child: Text(
+                            child: const Text(
                               '비밀번호 확인을 위해 한 번 더 입력해주세요.',
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 80.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 80.0),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFFEB2B2),
+                              backgroundColor: const Color(0xFFFEB2B2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -335,7 +337,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     builder: (context) => SignUpSuccess()),
                               );*/
                             },
-                            child: Container(
+                            child: const SizedBox(
                               width: 320,
                               height: 40,
                               child: Center(
@@ -350,16 +352,16 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 60.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 60.0),
                           ),
                         ],
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 150.0),
+                const Padding(
+                  padding: EdgeInsets.only(top: 150.0),
                 ),
               ],
             ),
