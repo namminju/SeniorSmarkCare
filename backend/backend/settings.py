@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'meal',
     'disease',
     'exercise',
-    'symtom',
+    'symptom',
     'corsheaders',
 ]
 
