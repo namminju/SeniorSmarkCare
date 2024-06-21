@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/Api/RootUrlProvider.dart'; // Assuming this file provides the root URL of your backend API
 
-// 가정: ExercisePhoto 위젯
+//ExercisePhoto 위젯
 class ExercisePhoto extends StatefulWidget {
   const ExercisePhoto({super.key});
 
@@ -199,21 +203,6 @@ class _ExercisePhotoState extends State<ExercisePhoto> {
                   fit: BoxFit.cover), // C 이미지 URL을 여기에 넣으세요
             ),
         ],
-      ),
-    );
-  }
-}
-
-// 가정: ExerciseVideo 위젯
-class ExerciseVideo extends StatelessWidget {
-  const ExerciseVideo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        '운동 영상 내용',
-        style: TextStyle(fontSize: 24),
       ),
     );
   }
