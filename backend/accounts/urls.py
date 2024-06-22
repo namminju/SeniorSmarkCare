@@ -11,5 +11,6 @@ urlpatterns = [
     path('address/', AddressCreateView.as_view()),
     path('address/search/', AddressSearchView.as_view()),
     path('address/my', AddressUpdateView.as_view()),
+    path('phone/', UserPhoneView.as_view()),
 ]
 
