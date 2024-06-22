@@ -23,6 +23,7 @@ class _LoginState extends State<Login> {
   Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
+
     print('토큰 저장 완료: $token');
   }
 
@@ -41,7 +42,7 @@ class _LoginState extends State<Login> {
 
     try {
       var response = await http.post(url, body: body, headers: headers);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         // 로그인 성공 시 토큰 저장
         var responseData = json.decode(response.body);
         var token = responseData['token'];
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
         );
       } else {
         print('로그인 실패: ${response.statusCode}');
-        // Show error dialog
+
         setState(() {
           _showErrorDialog();
         });

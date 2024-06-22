@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
             bool isLoggedIn = snapshot.data ?? false;
             return MaterialApp(
               title: '홀로똑똑',
-              home: isLoggedIn ? MainScreen() : Login(),
+              home: isLoggedIn ? MainScreen() : MainScreen(),
             );
           }
         }
