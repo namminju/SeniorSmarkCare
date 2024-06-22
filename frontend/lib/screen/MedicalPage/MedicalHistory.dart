@@ -5,33 +5,31 @@ import './MedicalHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
+
+DateTime now = DateTime.now();
+String day = DateFormat('yyyy-MM-dd').format(now);
+String time = DateFormat('HH:mm').format(now);
 
 class MedicalHistory extends StatefulWidget {
   @override
   _MedicalHistoryState createState() => _MedicalHistoryState();
 }
 
-void customLaunchUrl(url) async {
-  if (await canLaunchUrl(url)) {
-    launchUrl(url);
-  } else {
-    print('error');
-  }
-}
-
 class _MedicalHistoryState extends State<MedicalHistory> {
   String username = '';
   late String hospitalCall = '';
+  List<dynamic> history = [];
 
   @override
   void initState() {
     super.initState();
     _loadUsername();
-    fetchHospitalCall();
+    _loadHospitalCall();
+    _loadMedicalHistory();
   }
 
   void _loadUsername() async {
@@ -41,7 +39,39 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     });
   }
 
-  Future<void> fetchHospitalCall() async {
+  Future<void> _loadMedicalHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/medical/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var data = json.decode(response.body);
+          setState(() {
+            history = data;
+          });
+        } else {
+          print('Failed to load medical history: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading medical history: $e');
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  Future<void> _loadHospitalCall() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -63,23 +93,66 @@ class _MedicalHistoryState extends State<MedicalHistory> {
             hospitalCall = userData['hospitalCall']?.toString() ?? '';
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
-          // Handle failure
+          print('Failed to load hospital call number: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error loading user data: $e');
-        // Handle exceptions
+        print('Error loading hospital call number: $e');
       }
     } else {
       print('Token not found');
-      // Handle case where token is not available
+    }
+  }
+
+  Future<void> sendAppointment(
+      String reservationDate, String reservationTime) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      var body = json.encode({
+        'reservationDate': reservationDate,
+        'reservationTime': reservationTime,
+        "isDone": true
+      });
+      print(body);
+
+      try {
+        var response = await http.post(
+          Uri.parse('${RootUrlProvider.baseURL}/medical/'),
+          headers: headers,
+          body: body,
+        );
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          print('Appointment created successfully');
+        } else {
+          print('Failed to create appointment: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error creating appointment: $e');
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  void customLaunchUrl(String url) async {
+    if (await canLaunch(url)) {
+      launch(url);
+    } else {
+      print('Failed to launch URL');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colors.white,
       appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
@@ -125,20 +198,18 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20), // 버튼 위에 여백 추가
+                      SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFFEB2B2),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          elevation: 4, // 그림자 높이 조정
+                          elevation: 4,
                         ),
                         onPressed: () {
-                          // 버튼이 클릭되었을 때 실행되는 동작
-                          Uri messageLaunchUri =
-                              Uri(scheme: 'tel', path: hospitalCall);
-                          customLaunchUrl(messageLaunchUri);
+                          sendAppointment(day, time);
+                          customLaunchUrl('tel:$hospitalCall');
                         },
                         child: Container(
                           width: 320,
@@ -197,41 +268,34 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                       ),
                       Center(
                         child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(
-                                '2024.04.11. 09:56',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(
-                                '2024.04.07. 15:46',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(
-                                '2024.03.02. 18:02',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                          children: history.isNotEmpty
+                              ? history.reversed
+                                  .take(3)
+                                  .map((record) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                          '${record['reservationDate']}   ${record['reservationTime']}',
+                                          style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                              : [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: Text(
+                                      '진료 기록이 없습니다.',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                         ),
                       ),
                       Padding(
@@ -241,7 +305,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           children: [
                             InkWell(
                               onTap: () {
-                                // 더보기 텍스트가 클릭되었을 때 실행되는 동작
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -250,7 +313,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                 );
                               },
                               child: Text(
-                                '더보기',
+                                '더 보기',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.normal,
