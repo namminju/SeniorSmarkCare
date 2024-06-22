@@ -1,28 +1,38 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../widgets/PageNavigationBigButton.dart';
-import 'SymtomCategory.dart';
-import 'SymtomHistoryAdd.dart';
+import 'package:frontend/screen/MedicalPage/MedicalHistoryAdd.dart';
+
 import 'package:frontend/widget/AppBar.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import 'package:frontend/Api/RootUrlProvider.dart';
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
-class SymptomHistory extends StatefulWidget {
+DateTime now = DateTime.now();
+String day = DateFormat('yyyy-MM-dd').format(now);
+String time = DateFormat('HH:mm').format(now);
+
+class MedicalHistory extends StatefulWidget {
+  const MedicalHistory({super.key});
+
   @override
-  _SymptomHistoryState createState() => _SymptomHistoryState();
+  _MedicalHistoryState createState() => _MedicalHistoryState();
 }
 
-class _SymptomHistoryState extends State<SymptomHistory> {
+class _MedicalHistoryState extends State<MedicalHistory> {
   String username = '';
-  var userData = {};
+  late String hospitalCall = '';
+  List<dynamic> history = [];
 
   @override
   void initState() {
     super.initState();
     _loadUsername();
-    _getSymptom();
+    _loadHospitalCall();
+    _loadMedicalHistory();
   }
 
   void _loadUsername() async {
@@ -32,7 +42,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
     });
   }
 
-  Future<void> _getSymptom() async {
+  Future<void> _loadMedicalHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -44,305 +54,284 @@ class _SymptomHistoryState extends State<SymptomHistory> {
 
       try {
         var response = await http.get(
-          Uri.parse('${RootUrlProvider.baseURL}/symptom/list/today'),
+          Uri.parse('${RootUrlProvider.baseURL}/medical/'),
           headers: headers,
         );
 
         if (response.statusCode == 200) {
-          var rawData = response.bodyBytes;
-          var utf8Data = utf8.decode(rawData);
-
+          var data = json.decode(response.body);
           setState(() {
-            var tempData = json.decode(utf8Data);
-            if (tempData[0].isNotEmpty) {
-              userData = tempData[0];
-            }
+            history = data;
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          print('Failed to load medical history: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        print('Error loading medical history: $e');
       }
     } else {
       print('Token not found');
     }
   }
 
-  Widget _buildCategory(String category, List? symptoms) {
-    return symptoms != null && symptoms.isNotEmpty
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    category,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Wrap(
-                      children: List<Widget>.generate(
-                        symptoms.length > 2 ? 2 : symptoms.length,
-                        (index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 4.0),
-                            child: Text(
-                              '${symptoms[index]['display_name']}' +
-                                  (index !=
-                                          (symptoms.length > 2
-                                              ? 1
-                                              : symptoms.length - 1)
-                                      ? ', '
-                                      : ''),
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          )
-        : Container();
+  Future<void> _loadHospitalCall() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          setState(() {
+            hospitalCall = userData['hospitalCall']?.toString() ?? '';
+          });
+        } else {
+          print('Failed to load hospital call number: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading hospital call number: $e');
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  Future<void> sendAppointment(
+      String reservationDate, String reservationTime) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      var body = json.encode({
+        'reservationDate': reservationDate,
+        'reservationTime': reservationTime,
+        "isDone": true
+      });
+      print(body);
+
+      try {
+        var response = await http.post(
+          Uri.parse('${RootUrlProvider.baseURL}/medical/'),
+          headers: headers,
+          body: body,
+        );
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          print('Appointment created successfully');
+        } else {
+          print('Failed to create appointment: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error creating appointment: $e');
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  void customLaunchUrl(String url) async {
+    if (await canLaunch(url)) {
+      launch(url);
+    } else {
+      print('Failed to launch URL');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    double width = screenSize.width;
-
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        appBar:
-            CustomAppBar(), // Assuming CustomAppBar is correctly implemented
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'images/mainPageImg/grandma.png',
-                      width: width * 0.1,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '$username님',
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      '의 건강기록',
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.w300),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Container(
-                    width: 320,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '오늘 나의 상태는?',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                '비대면 진료',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Container(
+                  width: 320,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          '비대면 진료를 원하시나요?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Divider(color: Colors.black),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: userData.isNotEmpty
-                              ? [
-                                  _buildCategory(
-                                      '머리  :', userData['head_symptoms']),
-                                  _buildCategory(
-                                      '상체  :', userData['upper_body_symptoms']),
-                                  _buildCategory(
-                                      '하체  :', userData['lower_body_symptoms']),
-                                  _buildCategory(
-                                      '손/발 :', userData['hand_foot_symptoms']),
-                                ]
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          '아래 버튼을 이용하여 진료를 받아보세요!',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFEB2B2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 4,
+                        ),
+                        onPressed: () {
+                          sendAppointment(day, time);
+                          customLaunchUrl('tel:$hospitalCall');
+                        },
+                        child: const SizedBox(
+                          width: 320,
+                          height: 52,
+                          child: Center(
+                            child: Text(
+                              '진료하러 가기',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Container(
+                  width: 320,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '$username님의 이전 진료 예약 내역',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text(
+                              '(최근 3개월)',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                      ),
+                      Center(
+                        child: Column(
+                          children: history.isNotEmpty
+                              ? history.reversed
+                                  .take(3)
+                                  .map((record) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                          '${record['reservationDate']}   ${record['reservationTime']}',
+                                          style: const TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
                               : [
-                                  Text(
-                                    '오늘 등록된 증상이 없습니다.',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Text(
+                                      '진료 기록이 없습니다.',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SymtomHistoryAdd(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  '더보기',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Container(
-                    width: 320,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            '혹시 더 아픈 부위가 있으신가요?',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                        Divider(color: Colors.black),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            '아래 버튼을 이용하여 추가해보세요!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFEB2B2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 4,
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  contentPadding: EdgeInsets.all(20),
-                                  insetPadding: EdgeInsets.zero,
-                                  backgroundColor: Color(0XFFF0F0F0),
-                                  content: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '오늘 나의 상태는?',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('X'),
-                                          ),
-                                        ],
-                                      ),
-                                      Divider(color: Colors.black),
-                                      SizedBox(
-                                        width: 300,
-                                        height: 550,
-                                        child: SymptomCategory(
-                                          onSubmit: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MedicalHistoryAdd()),
                                 );
                               },
-                            );
-                          },
-                          child: Container(
-                            width: 320,
-                            height: 52,
-                            child: Center(
-                              child: Text(
-                                '증상 추가',
+                              child: const Text(
+                                '더 보기',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
                                   color: Colors.black,
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

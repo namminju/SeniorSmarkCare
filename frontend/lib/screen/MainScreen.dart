@@ -10,7 +10,7 @@ import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
@@ -148,7 +148,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SymptomHistory()),
+                      MaterialPageRoute(
+                          builder: (context) => const SymptomHistory()),
                     );
                   },
                   child: Column(
@@ -391,7 +392,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MedicalHistory()),
+                      MaterialPageRoute(
+                          builder: (context) => const MedicalHistory()),
                     );
                   },
                   child: Column(children: [

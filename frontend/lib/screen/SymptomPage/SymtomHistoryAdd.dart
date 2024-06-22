@@ -10,6 +10,8 @@ import 'package:logging/logging.dart';
 final Logger _logger = Logger('Symtom');
 
 class SymtomHistoryAdd extends StatefulWidget {
+  const SymtomHistoryAdd({super.key});
+
   @override
   _SymtomHistoryAdd createState() => _SymtomHistoryAdd();
 }

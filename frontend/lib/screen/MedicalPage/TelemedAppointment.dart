@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../widgets/PageNavigationBigButton.dart';
-import './MedicalHistory.dart'; // MedicalHistory 페이지 import
+import 'package:frontend/screen/MedicalPage/MedicalHistory.dart'; // MedicalHistory 페이지 import
 import 'package:frontend/widget/AppBar.dart';
 
 class TelemedAppointment extends StatelessWidget {
+  const TelemedAppointment({super.key});
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
@@ -108,10 +110,10 @@ class TelemedAppointment extends StatelessWidget {
                             ),
                             // PageNavigationBigButton 위젯 생성하면서 텍스트와 nextPage 설정
                             PageNavigationBigButton(
-                              buttonText: '진료 종료하기',
-                              nextPage:
-                                  MedicalHistory(), // MedicalHistory 페이지로 이동
-                            ),
+                                buttonText: '진료 종료하기',
+                                nextPage:
+                                    const MedicalHistory() // MedicalHistory 페이지로 이동
+                                ),
                           ],
                         ),
                       ),
