@@ -81,7 +81,7 @@ class UserExtra(models.Model):
         max_length=11,
         null=True,
         blank=True,
-        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid call number')]
+        validators=[RegexValidator(regex=r'^0[0-9]{8,10}$', message='Enter a valid call number')]
     )
 
 class UserAddress(models.Model):
