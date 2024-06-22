@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'dart:convert';
@@ -6,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('Symtom');
 
 class SymtomHistoryAdd extends StatefulWidget {
   @override
@@ -57,13 +59,13 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
             }
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.warning('Failed to load user data: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
     }
   }
 
@@ -81,12 +83,12 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
               children: [
                 Text(
                   category,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: Colors.black,
                 ),
                 Column(
@@ -98,7 +100,7 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
                           '${symptoms[index]['display_name']}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -116,7 +118,7 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
@@ -128,7 +130,8 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
                 padding: const EdgeInsets.only(top: 30, bottom: 10),
                 child: Text(
                   '$username님의 오늘의 건강 기록',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 25, fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
@@ -142,7 +145,7 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Divider(
+                      const Divider(
                         color: Colors.black,
                       ),
                       Center(
@@ -150,43 +153,43 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: userData.isNotEmpty
                               ? [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   _buildCategory(
                                       '머리', userData['head_symptoms']),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   _buildCategory(
                                       '상체', userData['upper_body_symptoms']),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   _buildCategory(
                                       '하체', userData['lower_body_symptoms']),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   _buildCategory(
                                       '손/발', userData['hand_foot_symptoms']),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
+                                  const Padding(
+                                    padding: EdgeInsets.all(20),
                                   ),
                                 ]
                               : [
-                                  Padding(
-                                    padding: const EdgeInsets.all(124),
+                                  const Padding(
+                                    padding: EdgeInsets.all(124),
                                   ),
-                                  Text(
+                                  const Text(
                                     '오늘 등록된 증상이 없습니다.',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(148),
+                                  const Padding(
+                                    padding: EdgeInsets.all(148),
                                   ),
                                 ],
                         ),

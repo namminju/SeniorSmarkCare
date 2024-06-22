@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-//
+import 'package:logging/logging.dart';
 
 class ExerciseTime extends StatefulWidget {
   const ExerciseTime({super.key});
@@ -20,6 +20,7 @@ class _ExerciseTime extends State<ExerciseTime> {
   int _selectedCount = 1;
   final List<int> _alarmcnt = [1, 2, 3, 4, 5];
   int exerciseAlarmCount = 1;
+  final Logger _logger = Logger('_ExerciseTime');
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _ExerciseTime extends State<ExerciseTime> {
         throw Exception('Failed to load exercise alarm count');
       }
     } catch (e) {
-      print('Error fetching exercise alarm count: $e');
+      _logger.severe('Error fetching exercise alarm count: $e');
       // 오류 발생 시 기본값으로 초기화
       setState(() {
         exerciseAlarmCount = 1;
@@ -78,12 +79,12 @@ class _ExerciseTime extends State<ExerciseTime> {
 
       if (response.statusCode == 200) {
         // 성공적으로 저장됨
-        print('Exercise alarm count saved successfully');
+        _logger.info('Exercise alarm count saved successfully');
       } else {
         throw Exception('Failed to save exercise alarm count');
       }
     } catch (e) {
-      print('Error saving exercise alarm count: $e');
+      _logger.severe('Error saving exercise alarm count: $e');
       // 실패 시 에러 처리
     }
   }
@@ -450,7 +451,7 @@ class _ExerciseTime extends State<ExerciseTime> {
                   },
                 );
               } catch (e) {
-                print('Error saving exercise alarm count: $e');
+                _logger.severe('Error saving exercise alarm count: $e');
                 // 저장 실패 시 예외 처리
                 showDialog(
                     context: context,
@@ -556,9 +557,5 @@ class _ExerciseTime extends State<ExerciseTime> {
     final String hour = time.hour.toString().padLeft(2, '0');
     final String minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
-  }
-
-  String _formatTimeForApi(TimeOfDay time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
   }
 }

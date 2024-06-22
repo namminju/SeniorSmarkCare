@@ -12,19 +12,8 @@ class _ChangeAddress extends State<ChangeAddress> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: ' 거주지 변경이\n완료되었습니다.', // 매개변수로 텍스트 전달
-        );
-      },
-    );
-  }
-
-  void _showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return NoticeDialog(
-          text: '거주지 변경이 실패하였습니다. 다시 시도해주세요.', // 매개변수로 텍스트 전달
         );
       },
     );
@@ -34,7 +23,7 @@ class _ChangeAddress extends State<ChangeAddress> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
     double width = screenSize.width;
-    double height = screenSize.height; // 상대 수치를 이용하기 위함
+    //double height = screenSize.height; // 상대 수치를 이용하기 위함
 
     return SafeArea(
       child: Scaffold(
@@ -48,13 +37,13 @@ class _ChangeAddress extends State<ChangeAddress> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '마이페이지',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
-                  child: Text(
+                  child: const Text(
                     '[거주지 변경]',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
@@ -71,8 +60,8 @@ class _ChangeAddress extends State<ChangeAddress> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '기존 등록된 거주지',
                             style: TextStyle(
@@ -81,11 +70,11 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.black,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
+                        const Padding(
+                          padding: EdgeInsets.all(2.0),
                           child: Text(
                             '01721',
                             style: TextStyle(
@@ -94,8 +83,8 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5.0),
                           child: Text(
                             '서울특별시 노원구 라이프신동아파트 116동 901호',
                             style: TextStyle(
@@ -104,9 +93,9 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Padding(padding: const EdgeInsets.only(top: 30)),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(padding: EdgeInsets.only(top: 30)),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '변경하고자 하는 거주지',
                             style: TextStyle(
@@ -115,7 +104,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.black,
                         ),
                         Padding(
@@ -123,7 +112,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 '도로명 주소 입력',
                                 style: TextStyle(
                                   fontSize: 24,
@@ -132,7 +121,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                               ),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFFFEB2B2),
+                                  backgroundColor: const Color(0xFFFEB2B2),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(4),
                                   ),
@@ -141,7 +130,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                                 onPressed: () {
                                   // 찾기 버튼 클릭 시 동작 정의
                                 },
-                                child: Container(
+                                child: const SizedBox(
                                   width: 68,
                                   height: 24,
                                   child: Center(
@@ -159,8 +148,8 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5.0),
                           child: Text(
                             '상세주소 입력',
                             style: TextStyle(
@@ -169,12 +158,12 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 80.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 80.0),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFEB2B2),
+                            backgroundColor: const Color(0xFFFEB2B2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -182,7 +171,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                           ),
                           onPressed:
                               _showConfirmationDialog, // 저장하기 버튼 클릭 시 팝업 띄우기
-                          child: Container(
+                          child: const SizedBox(
                             width: 320,
                             height: 40,
                             child: Center(
@@ -197,8 +186,8 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 60.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 60.0),
                         ),
                       ],
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/screen/MainScreen.dart';
 //
@@ -7,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:logging/logging.dart';
 //
 
 class MealTime extends StatefulWidget {
@@ -21,6 +21,7 @@ class _MealTimeState extends State<MealTime> {
   int _selectedCount = 1;
   final List<int> _mealCounts = [1, 2, 3, 4, 5];
   int mealAlarmCount = 1;
+  final Logger _logger = Logger('_MealTimeState');
 
   @override
   void initState() {
@@ -52,7 +53,7 @@ class _MealTimeState extends State<MealTime> {
         throw Exception('Failed to load meal alarm count');
       }
     } catch (e) {
-      print('Error fetching meal alarm count: $e');
+      _logger.severe('Error fetching meal alarm count: $e');
       // 오류 발생 시 기본값으로 초기화
       setState(() {
         mealAlarmCount = 1;
@@ -79,12 +80,12 @@ class _MealTimeState extends State<MealTime> {
 
       if (response.statusCode == 200) {
         // 성공적으로 저장됨
-        print('Meal alarm count saved successfully');
+        _logger.info('Meal alarm count saved successfully');
       } else {
         throw Exception('Failed to save meal alarm count');
       }
     } catch (e) {
-      print('Error saving meal alarm count: $e');
+      _logger.severe('Error saving meal alarm count: $e');
       // 실패 시 에러 처리
     }
   }
@@ -458,7 +459,7 @@ class _MealTimeState extends State<MealTime> {
                   },
                 );
               } catch (e) {
-                print('Error saving meal alarm count: $e');
+                _logger.severe('Error saving meal alarm count: $e');
                 // 저장 실패 시 예외 처리
                 showDialog(
                     context: context,
@@ -566,7 +567,7 @@ class _MealTimeState extends State<MealTime> {
     return '$hour:$minute';
   }
 
-  String _formatTimeForApi(TimeOfDay time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
-  }
+  // String _formatTimeForApi(TimeOfDay time) {
+  //   return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
+  // }
 }

@@ -16,23 +16,23 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: '전화번호 변경이\n완료되었습니다.',
         );
       },
     );
   }
 
-  void _showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return NoticeDialog(
-          text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
-        );
-      },
-    );
-  }
+  // void _showErrorDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return NoticeDialog(
+  //         text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(), // CustomAppBar()으로 변경
+        appBar: const CustomAppBar(), // CustomAppBar()으로 변경
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -51,13 +51,13 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '마이페이지',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
-                  child: Text(
+                  child: const Text(
                     '[보호자 전화번호 변경]',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
@@ -74,8 +74,8 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '변경 전 전화번호',
                             style: TextStyle(
@@ -84,11 +84,11 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.black,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
+                        const Padding(
+                          padding: EdgeInsets.all(2.0),
                           child: Text(
                             '010 - 1234 - 5678',
                             style: TextStyle(
@@ -97,8 +97,8 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5.0),
                           child: Text(
                             '비밀번호 인증 후 변경이 가능합니다.',
                             style: TextStyle(
@@ -107,9 +107,9 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             ),
                           ),
                         ),
-                        Padding(padding: const EdgeInsets.only(top: 30)),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(padding: EdgeInsets.only(top: 30)),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '비밀번호 본인 확인',
                             style: TextStyle(
@@ -123,7 +123,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                           child: Stack(
                             alignment: Alignment.centerRight,
                             children: [
-                              TextField(
+                              const TextField(
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -141,7 +141,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                 padding: const EdgeInsets.only(right: 12.0),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFEB2B2),
+                                    backgroundColor: const Color(0xFFFEB2B2),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -152,7 +152,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                       _showPasswordVerification = true;
                                     });
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 68,
                                     height: 24,
                                     child: Center(
@@ -160,7 +160,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                         _showPasswordVerification
                                             ? '인증 완료'
                                             : '인증하기',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -174,9 +174,9 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                           ),
                         ),
                         if (_showPasswordVerification) ...[
-                          Padding(padding: const EdgeInsets.only(top: 30)),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
+                          const Padding(padding: EdgeInsets.only(top: 30)),
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
                             child: Text(
                               '전화번호 인증 및 변경',
                               style: TextStyle(
@@ -190,7 +190,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
-                                TextField(
+                                const TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -209,7 +209,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                   padding: const EdgeInsets.only(right: 12.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFFEB2B2),
+                                      backgroundColor: const Color(0xFFFEB2B2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -220,7 +220,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                         _showPhoneVerification = true;
                                       });
                                     },
-                                    child: Container(
+                                    child: SizedBox(
                                       width: 68,
                                       height: 24,
                                       child: Center(
@@ -228,7 +228,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                           _showPhoneVerification
                                               ? '인증 완료'
                                               : '인증하기',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -248,7 +248,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
-                                TextField(
+                                const TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -267,7 +267,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                   padding: const EdgeInsets.only(right: 12.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFFEB2B2),
+                                      backgroundColor: const Color(0xFFFEB2B2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -279,13 +279,13 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                       });
                                       _showConfirmationDialog();
                                     },
-                                    child: Container(
+                                    child: SizedBox(
                                       width: 68,
                                       height: 24,
                                       child: Center(
                                         child: Text(
                                           _isPhoneVerified ? '인증 완료' : '인증하기',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -303,8 +303,8 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 150.0),
+                const Padding(
+                  padding: EdgeInsets.only(top: 150.0),
                 ),
               ],
             ),

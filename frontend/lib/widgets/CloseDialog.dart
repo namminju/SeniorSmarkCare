@@ -13,7 +13,7 @@ class CloseDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.white,
-      content: Container(
+      content: SizedBox(
         width: 288,
         height: 256,
         child: Column(
@@ -22,15 +22,15 @@ class CloseDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   '',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   '',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   '알림',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -38,38 +38,38 @@ class CloseDialog extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(); // 팝업 닫기
                   },
-                  child: Text('X'),
+                  child: const Text('X'),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(4),
+            const Padding(
+              padding: EdgeInsets.all(4),
             ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.all(16),
             ),
             Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Padding(
+              padding: EdgeInsets.all(16),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFEB2B2),
+                backgroundColor: const Color(0xFFFEB2B2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 elevation: 4, // 그림자 높이 조정
-                minimumSize: Size(240, 44), // 최소 크기 설정
+                minimumSize: const Size(240, 44), // 최소 크기 설정
               ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 '확인', // 외부에서 받은 버튼 텍스트 사용
                 style: TextStyle(
                   fontSize: 16,

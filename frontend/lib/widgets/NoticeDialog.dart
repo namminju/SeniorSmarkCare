@@ -15,7 +15,7 @@ class NoticeDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.white,
-      content: Container(
+      content: SizedBox(
         width: 288,
         height: 256,
         child: Column(
@@ -24,15 +24,15 @@ class NoticeDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   '',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   '',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   '알림',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -40,28 +40,28 @@ class NoticeDialog extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop(); // 팝업 닫기
                   },
-                  child: Text('X'),
+                  child: const Text('X'),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(4),
+            const Padding(
+              padding: EdgeInsets.all(4),
             ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.all(16),
             ),
             Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Padding(
+              padding: EdgeInsets.all(16),
             ),
             PageNavigationBigButton(
               buttonText: '확인',
-              nextPage: Mypage(), // MedicalHistory 페이지로 이동
+              nextPage: const Mypage(), // MedicalHistory 페이지로 이동
             )
           ],
         ),

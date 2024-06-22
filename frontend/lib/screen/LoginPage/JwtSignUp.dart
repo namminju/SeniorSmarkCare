@@ -372,13 +372,12 @@
 //   }
 // }
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/widgets/NoticeDialog.dart';
 import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:logging/logging.dart';
 
 class JwtSignUp extends StatefulWidget {
   const JwtSignUp({super.key});
@@ -395,6 +394,8 @@ class _JwtSignUpState extends State<JwtSignUp> {
 
   bool _showPhoneVerification = false;
   bool _isPhoneVerified = false;
+
+  final Logger _logger = Logger('_JwtSignUpState');
 
   void _showConfirmationDialog() {
     showDialog(
@@ -437,12 +438,12 @@ class _JwtSignUpState extends State<JwtSignUp> {
       var headers = {
         'Content-Type': 'application/json',
       };
-      print("Sending data to URL: $url");
-      print("Body: $body");
+      _logger.info("Sending data to URL: $url");
+      _logger.info("Body: $body");
       var response = await http.post(url, body: body, headers: headers);
 
       if (response.statusCode == 201) {
-        print('회원가입 성공: ${response.body}');
+        _logger.info('회원가입 성공: ${response.body}');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -450,7 +451,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
         );
         // 필요한 추가 처리나 페이지 이동 등을 수행
       } else {
-        print('회원가입 실패: ${response.statusCode}');
+        _logger.warning('회원가입 실패: ${response.statusCode}');
         _showErrorDialog();
         // 실패 처리에 대한 다이얼로그 표시 등을 수행
       }

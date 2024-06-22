@@ -7,6 +7,7 @@ import 'package:frontend/screen/MyPage/ChangeAddress.dart';
 import 'package:frontend/screen/MyPage/ChangeBodyInfo.dart';
 import 'package:frontend/screen/MyPage/ChangePhoneNum.dart';
 import 'package:frontend/screen/MyPage/ChangeGuardianPhoneNum.dart';
+import 'package:logging/logging.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class Mypage extends StatefulWidget {
 }
 
 class _MypageState extends State<Mypage> {
+  final Logger _logger = Logger('_MypageState');
   late String userName = '';
   late String userPhone = '';
   late String userBirth = '';
@@ -54,15 +56,15 @@ class _MypageState extends State<Mypage> {
             userPhone = userData['userPhone']?.toString() ?? '';
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.warning('Failed to load user data: ${response.statusCode}');
           // Handle failure
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
         // Handle exceptions
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
       // Handle case where token is not available
     }
   }
@@ -106,15 +108,15 @@ class _MypageState extends State<Mypage> {
             }
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.warning('Failed to load user data: ${response.statusCode}');
           // Handle failure
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
         // Handle exceptions
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
       // Handle case where token is not available
     }
   }
@@ -128,7 +130,7 @@ class _MypageState extends State<Mypage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('마이페이지'),
+          title: const Text('마이페이지'),
         ),
         body: Center(
           child: SingleChildScrollView(
@@ -138,13 +140,13 @@ class _MypageState extends State<Mypage> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '마이페이지',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
-                  child: Text(
+                  child: const Text(
                     '* 변경 버튼이 없는 정보는 바꿀 수 없습니다.',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
@@ -182,7 +184,7 @@ class _MypageState extends State<Mypage> {
                                   builder: (context) => ChangeAddress()),
                             );
                           },
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 13, // 원하는 크기로 조정
                             fontWeight: FontWeight.bold,
                           ),
@@ -217,8 +219,8 @@ class _MypageState extends State<Mypage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(36.0),
+                const Padding(
+                  padding: EdgeInsets.all(36.0),
                 ),
               ],
             ),
@@ -237,12 +239,12 @@ class _MypageState extends State<Mypage> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(
+          const Divider(
             color: Colors.black,
           ),
           Padding(
@@ -253,7 +255,7 @@ class _MypageState extends State<Mypage> {
                 Text(
                   value,
                   style: textStyle ??
-                      TextStyle(
+                      const TextStyle(
                         // 기존 스타일에 textStyle을 적용하거나 기본 스타일 사용
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -262,14 +264,14 @@ class _MypageState extends State<Mypage> {
                 if (hasButton)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFEB2B2),
+                      backgroundColor: const Color(0xFFFEB2B2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                       ),
                       elevation: 1,
                     ),
                     onPressed: onPressed,
-                    child: Container(
+                    child: const SizedBox(
                       width: 68,
                       height: 24,
                       child: Center(
@@ -287,7 +289,7 @@ class _MypageState extends State<Mypage> {
               ],
             ),
           ),
-          SizedBox(height: 5.0),
+          const SizedBox(height: 5.0),
         ],
       ),
     );

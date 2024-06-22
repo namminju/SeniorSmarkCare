@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/screen/MainScreen.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:frontend/screen/LoginPage/JwtSignUp.dart';
-//import 'package:frontend/screen/LoginPage/FindPasswd.dart';
 import 'package:frontend/widgets/CloseDialog.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -21,12 +20,13 @@ class _LoginState extends State<Login> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   String token = '';
+  final Logger _logger = Logger('_LoginState');
 
   Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token);
 
-    print('토큰 저장 완료: $token');
+    _logger.info('토큰 저장 완료: $token');
   }
 
   Future<void> sendData(String userName, String password) async {
@@ -39,8 +39,8 @@ class _LoginState extends State<Login> {
     var headers = {
       'Content-Type': 'application/json',
     };
-    print("Sending data to URL: $url");
-    print("Body: $body");
+    _logger.info("Sending data to URL: $url");
+    _logger.info("Body: $body");
 
     try {
       var response = await http.post(url, body: body, headers: headers);
@@ -56,14 +56,14 @@ class _LoginState extends State<Login> {
           MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       } else {
-        print('로그인 실패: ${response.statusCode}');
+        _logger.warning('로그인 실패: ${response.statusCode}');
 
         setState(() {
           _showErrorDialog();
         });
       }
     } catch (e) {
-      print('오류 발생: $e');
+      _logger.severe('오류 발생: $e');
       // 예외 처리 로직 추가
     }
   }
@@ -81,8 +81,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    double width = screenSize.width;
+    //Size screenSize = MediaQuery.of(context).size;
+    //double width = screenSize.width;
 
     return Scaffold(
       backgroundColor: Colors.white,

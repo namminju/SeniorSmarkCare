@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/Api/RootUrlProvider.dart'; // Assuming this file provides the root URL of your backend API
 
 //ExercisePhoto 위젯
 class ExercisePhoto extends StatefulWidget {
