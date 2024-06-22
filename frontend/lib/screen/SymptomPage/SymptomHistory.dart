@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'SymtomCategory.dart';
-import 'SymtomHistoryAdd.dart';
+import 'package:frontend/screen/SymptomPage/SymptomCategory.dart';
+import 'package:frontend/screen/SymptomPage/SymtomHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:logging/logging.dart';
@@ -12,6 +12,8 @@ import 'package:logging/logging.dart';
 final Logger _logger = Logger('Symtom');
 
 class SymptomHistory extends StatefulWidget {
+  const SymptomHistory({super.key});
+
   @override
   _SymptomHistoryState createState() => _SymptomHistoryState();
 }
@@ -95,13 +97,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 4.0),
                             child: Text(
-                              '${symptoms[index]['display_name']}' +
-                                  (index !=
-                                          (symptoms.length > 2
-                                              ? 1
-                                              : symptoms.length - 1)
-                                      ? ', '
-                                      : ''),
+                              '${symptoms[index]['display_name']}${index != (symptoms.length > 2 ? 1 : symptoms.length - 1) ? ', ' : ''}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -215,7 +211,8 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SymtomHistoryAdd(),
+                                      builder: (context) =>
+                                          const SymtomHistoryAdd(),
                                     ),
                                   );
                                 },

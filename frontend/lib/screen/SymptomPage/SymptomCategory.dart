@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
 import 'package:frontend/widgets/PageNavigationBigButton.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +16,8 @@ class DynamicPage extends StatefulWidget {
   final String category;
   final String paramName;
 
-  DynamicPage({required this.category, required this.paramName});
+  const DynamicPage(
+      {super.key, required this.category, required this.paramName});
 
   @override
   _DynamicPageState createState() => _DynamicPageState();
@@ -118,7 +119,7 @@ class _DynamicPageState extends State<DynamicPage> {
 class SymptomCategory extends StatefulWidget {
   final VoidCallback? onSubmit;
 
-  SymptomCategory({Key? key, this.onSubmit}) : super(key: key);
+  const SymptomCategory({super.key, this.onSubmit});
 
   @override
   _SymptomCategoryState createState() => _SymptomCategoryState();
@@ -161,7 +162,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFF0F0F0),
+                        backgroundColor: const Color(0xFFF0F0F0),
                         side: const BorderSide(width: 2, color: Colors.black),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -423,7 +424,7 @@ void _showSubmissionDialog(BuildContext context) {
                     for (int i = 0; i < 3; i++)
                       if (update[i])
                         Text(
-                          categories[i + 1] + ',',
+                          '${categories[i + 1]},',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -453,7 +454,7 @@ void _showSubmissionDialog(BuildContext context) {
               if (isSuccess) // Show button only if successful
                 PageNavigationBigButton(
                   buttonText: '확인하러 가기',
-                  nextPage: SymptomHistory(),
+                  nextPage: const SymptomHistory(),
                 ),
               if (!isSuccess) // Show button only if not successful
                 ElevatedButton(
@@ -491,7 +492,7 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.blue,
     ),
-    home: SymptomCategory(),
+    home: const SymptomCategory(),
   ));
 }
 
