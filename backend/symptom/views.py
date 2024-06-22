@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import DailySymptom
 from .serializers import *
+from django.utils import timezone
 
 class HeadSymptomCreateView(generics.CreateAPIView):
     serializer_class = HeadSymptomSerializer
@@ -46,3 +47,12 @@ class CategorySymptomListView(generics.ListAPIView):
     def get_queryset(self):
         category_name = self.kwargs['category_name'].upper()
         return Symptom.objects.filter(category__name=category_name)
+    
+class TodaySymptomListView(generics.ListAPIView):
+    serializer_class = DailySymptomSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        today = timezone.localdate()
+        return DailySymptom.objects.filter(user=user, symptom_date=today).order_by('symptom_date')
