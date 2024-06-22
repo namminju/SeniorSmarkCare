@@ -23,7 +23,7 @@ void _setupLogging() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,7 @@ class MyApp extends StatelessWidget {
             bool isLoggedIn = snapshot.data ?? false;
             return MaterialApp(
               title: '홀로똑똑',
-
               home: isLoggedIn ? const MainScreen() : const Login(),
-
             );
           }
         }
