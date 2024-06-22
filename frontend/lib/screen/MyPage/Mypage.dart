@@ -8,7 +8,10 @@ import 'package:frontend/screen/MyPage/ChangeAddress.dart';
 import 'package:frontend/screen/MyPage/ChangeBodyInfo.dart';
 import 'package:frontend/screen/MyPage/ChangePhoneNum.dart';
 import 'package:frontend/screen/MyPage/ChangeGuardianPhoneNum.dart';
+import 'package:frontend/screen/MyPage/ChangeHospitalNum.dart';
+
 import 'package:logging/logging.dart';
+
 
 class Mypage extends StatefulWidget {
   const Mypage({super.key});
@@ -27,7 +30,7 @@ class _MypageState extends State<Mypage> {
   late String hospitalCall = '';
   late String height = '';
   late String weight = '';
-
+  late String userAddress = '';
   @override
   void initState() {
     super.initState();
@@ -55,7 +58,7 @@ class _MypageState extends State<Mypage> {
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
           setState(() {
-            hospitalCall = userData['hospitalCall']?.toString() ?? '';
+            hospitalCall = userData['hospitalCall']?.toString() ?? '미정';
           });
         } else {
           print('Failed to load user data: ${response.statusCode}');
@@ -131,7 +134,20 @@ class _MypageState extends State<Mypage> {
             guardPhone = userData['guardPhone']?.toString() ?? '미정';
             height = userData['height']?.toString() ?? '0';
             weight = userData['weight']?.toString() ?? '0';
-
+            if (userBirth == '0001-01-01') {
+              userBirth = '미정';
+            }
+            if (userGender == '') {
+              userGender = '미정';
+            }
+            if (guardPhone == '0100000000') {
+              guardPhone = '미정';
+            }
+            if (userGender == 'Male') {
+              userBirth = '남성';
+            } else if (userGender == 'Female') {
+              userBirth = '여성';
+            }
             // 값이 모두 0이면 미정으로 설정
             if (height == '0' && weight == '0') {
               height = '';
@@ -211,7 +227,7 @@ class _MypageState extends State<Mypage> {
                         }),
                         buildInfoRow(
                           '거주지',
-                          '서울특별시 노원구\n 라이프신동아파트 116동 901호',
+                          userAddress,
                           hasButton: true,
                           onPressed: () {
                             Navigator.push(
@@ -256,7 +272,7 @@ class _MypageState extends State<Mypage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChangeGuardianPhoneNum()),
+                                builder: (context) => ChangeHospitalNum()),
                           );
                         }),
                       ],
