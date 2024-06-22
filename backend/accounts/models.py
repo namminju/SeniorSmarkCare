@@ -77,6 +77,26 @@ class UserExtra(models.Model):
     )
     height = models.IntegerField(null=True, blank=True)
     weight = models.IntegerField(null=True, blank=True)
+    hospitalCall = models.CharField(
+        max_length=11,
+        null=True,
+        blank=True,
+        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid call number')]
+    )
+
+class UserAddress(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    postal_code = models.CharField(max_length=10, verbose_name="우편번호")
+    city = models.CharField(max_length=100, verbose_name="시/도", blank=True, null=True)
+    district = models.CharField(max_length=100, verbose_name="시/군/구", blank=True, null=True)
+    neighborhood = models.CharField(max_length=100, verbose_name="동/읍/면", blank=True, null=True)
+    road_address = models.CharField(max_length=255, verbose_name="도로명 주소", blank=True, null=True)
+    building_number = models.CharField(max_length=20, verbose_name="건물번호", blank=True, null=True)
+    detailed_address = models.CharField(max_length=255, verbose_name="상세주소", blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.postal_code}, {self.road_address}, {self.building_number}, {self.neighborhood}, {self.district}, {self.city}"
+
 
 @receiver(post_save, sender = User)
 def create_user_info(sender, instance, created, **kwargs):
