@@ -16,9 +16,9 @@ class _SetInfo extends State<SetInfo> {
       //안전한 영역의 확보
       child: Scaffold(
         appBar: AppBar(
-          title: Text('개인 정보 초기 설정'),
+          title: const Text('개인 정보 초기 설정'),
         ),
-        body: Column(),
+        body: const Column(),
       ),
     );
   }

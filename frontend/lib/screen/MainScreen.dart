@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screen/MealPage/MealTime.dart';
-import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
+import 'package:frontend/screen/MealPage/MealRecommend.dart';
+
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
+import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
+
+import 'package:frontend/widget/AppBar.dart';
+
+import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
 import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
@@ -9,9 +15,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -19,6 +26,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   String username = '';
+  final Logger _logger = Logger('_MainScreenState');
 
   @override
   void initState() {
@@ -36,8 +44,8 @@ class _MainScreenState extends State<MainScreen> {
         "Authorization": "Token $token"
       };
 
-      print('token: $token');
-      print('$header');
+      _logger.info('token: $token');
+      _logger.info('$header');
       try {
         var response = await http.get(
             Uri.parse('${RootUrlProvider.baseURL}/accounts/mypage/'),
@@ -45,20 +53,20 @@ class _MainScreenState extends State<MainScreen> {
 
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
-          print('$userData');
+          _logger.info('$userData');
           setState(() {
             username = userData['userName']; // 수정: 사용자 이름 업데이트
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.severe('Failed to load user data: ${response.statusCode}');
           // 실패 처리 로직 추가
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
         // 예외 처리 로직 추가
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
       // 토큰 없음 처리 로직 추가
     }
     await prefs.setString('username', username);
@@ -71,15 +79,7 @@ class _MainScreenState extends State<MainScreen> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('메인 화면'),
-          leading: IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
+        appBar: const CustomAppBar(),
         backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,29 +88,45 @@ class _MainScreenState extends State<MainScreen> {
             Center(
               child: Row(
                 children: [
-                  Padding(padding: EdgeInsets.all(10)),
-                  Image.asset(
-                    'images/mainPageImg/grandma.png',
-                    width: width * 0.1,
-                  ),
-                  Padding(padding: EdgeInsets.all(5)),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Mypage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      username.isNotEmpty ? '$username님' : '사용자 이름 없음',
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
+                  const Padding(padding: EdgeInsets.all(10)),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Mypage(),
+                          ),
+                        );
+                      },
+                      child: Image.asset(
+                        'images/mainPageImg/grandma.png',
+                        width: width * 0.1,
                       ),
                     ),
                   ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Mypage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        username.isNotEmpty ? '$username님' : '사용자 이름 없음',
+                        style: const TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -122,8 +138,8 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(160, 160),
-                    backgroundColor: Color(0xFFFFCC66),
+                    minimumSize: const Size(180, 160),
+                    backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -137,11 +153,12 @@ class _MainScreenState extends State<MainScreen> {
                   },
                   child: Column(
                     children: [
+                      Padding(padding: EdgeInsets.only(top: width * 0.024)),
                       Image.asset(
                         'images/mainPageImg/healthIcon.png',
-                        width: width * 0.15,
+                        height: width * 0.16,
                       ),
-                      Text(
+                      const Text(
                         '건강',
                         style: TextStyle(
                           fontSize: 60,
@@ -154,28 +171,97 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(160, 160),
-                    backgroundColor: Color(0xFF8ED973),
+                    minimumSize: const Size(180, 160),
+                    backgroundColor: const Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Exercisepage()), // 수정: Exercisepage -> ExercisePage
+                    //
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          contentPadding: const EdgeInsets.all(20),
+                          insetPadding: EdgeInsets.zero,
+                          backgroundColor: const Color(0XFFF0F0F0),
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Center(
+                                    child: Text(
+                                      '               운동',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('X'),
+                                  ),
+                                ],
+                              ),
+                              Divider(color: Colors.grey[600]),
+                              ListTile(
+                                title: const Center(
+                                  child: Text('운동 시간 설정',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ExerciseTime()),
+                                  );
+                                },
+                              ),
+                              Divider(color: Colors.grey[400]),
+                              ListTile(
+                                title: const Center(
+                                  child: Text('운동 보기',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Exercisepage()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
-                  },
+                  }, //
                   child: Column(
                     children: [
+                      Padding(padding: EdgeInsets.only(top: width * 0.024)),
                       Image.asset(
                         'images/mainPageImg/exerciseIcon.png',
-                        width: width * 0.15,
+                        height: width * 0.16,
                       ),
-                      Text(
+                      const Text(
                         '운동',
                         style: TextStyle(
                           fontSize: 60,
@@ -188,6 +274,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+            //
             Padding(
               padding: EdgeInsets.all(width * 0.024),
             ),
@@ -196,25 +283,93 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(160, 160),
-                    backgroundColor: Color(0xFFFF9966),
+                    minimumSize: const Size(180, 160),
+                    backgroundColor: const Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MealTime()),
+                    //
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          contentPadding: const EdgeInsets.all(20),
+                          insetPadding: EdgeInsets.zero,
+                          backgroundColor: const Color(0XFFF0F0F0),
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    '               식사',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('X'),
+                                  ),
+                                ],
+                              ),
+                              Divider(color: Colors.grey[600]),
+                              ListTile(
+                                title: const Center(
+                                  child: Text('식사 시간 알림',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MealTime()),
+                                  );
+                                },
+                              ),
+                              Divider(color: Colors.grey[400]),
+                              ListTile(
+                                title: const Center(
+                                  child: Text('식단 추천',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MealRecommend()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
                   child: Column(children: [
+                    Padding(padding: EdgeInsets.only(top: width * 0.024)),
                     Image.asset(
                       'images/mainPageImg/mealIcon.png',
-                      width: width * 0.15,
+                      height: width * 0.16,
                     ),
-                    Text(
+                    const Text(
                       '식사',
                       style: TextStyle(
                         fontSize: 60,
@@ -226,8 +381,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(160, 160),
-                    backgroundColor: Color(0xFFA1DCFF),
+                    minimumSize: const Size(180, 160),
+                    backgroundColor: const Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -240,11 +395,12 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                   child: Column(children: [
+                    Padding(padding: EdgeInsets.only(top: width * 0.024)),
                     Image.asset(
                       'images/mainPageImg/medicalIcon.png',
-                      width: width * 0.15,
+                      height: width * 0.16,
                     ),
-                    Text(
+                    const Text(
                       '진료',
                       style: TextStyle(
                         fontSize: 60,
@@ -256,9 +412,12 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
+            Padding(
+              padding: EdgeInsets.all(width * 0.04),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(160, 40),
+                minimumSize: const Size(160, 40),
                 backgroundColor: Colors.blueGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -268,10 +427,10 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Login()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                 );
               },
-              child: Text(
+              child: const Text(
                 '로그인 화면으로',
                 style: TextStyle(
                   fontSize: 16,
@@ -295,7 +454,7 @@ class _MainScreenState extends State<MainScreen> {
                         height: width * 0.17,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 170, 170, 170),
+                            color: const Color.fromARGB(255, 170, 170, 170),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
@@ -322,7 +481,7 @@ class _MainScreenState extends State<MainScreen> {
                       height: width * 0.17,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 170, 170, 170),
+                          color: const Color.fromARGB(255, 170, 170, 170),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Center(
