@@ -40,5 +40,6 @@ urlpatterns = [
     path('disease/', include('disease.urls')),
     path('exercise/', include('exercise.urls')),
     path('symptom/', include('symptom.urls')),
+    path('medical/', include('medical.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

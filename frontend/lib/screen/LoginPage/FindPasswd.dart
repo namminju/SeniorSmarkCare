@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart'; // 예시에 맞춰 변경
 import 'package:frontend/widgets/NoticeDialog.dart'; // 예시에 맞춰 변경
-import 'package:frontend/screen/LoginPage/SignUpSuccess.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
 
 class FindPasswd extends StatefulWidget {
@@ -10,7 +9,6 @@ class FindPasswd extends StatefulWidget {
 }
 
 class _FindPasswdState extends State<FindPasswd> {
-  bool _showPasswordVerification = false;
   bool _showPhoneVerification = false;
   bool _isPhoneVerified = false;
 
@@ -18,19 +16,8 @@ class _FindPasswdState extends State<FindPasswd> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: '전화번호 변경이\n완료되었습니다.',
-        );
-      },
-    );
-  }
-
-  void _showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return NoticeDialog(
-          text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
         );
       },
     );
@@ -44,7 +31,7 @@ class _FindPasswdState extends State<FindPasswd> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(), // CustomAppBar()으로 변경
+        appBar: const CustomAppBar(), // CustomAppBar()으로 변경
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -53,7 +40,7 @@ class _FindPasswdState extends State<FindPasswd> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '비밀번호 찾기',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
@@ -73,7 +60,7 @@ class _FindPasswdState extends State<FindPasswd> {
                           child: Stack(
                             alignment: Alignment.centerRight,
                             children: [
-                              TextField(
+                              const TextField(
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -92,7 +79,7 @@ class _FindPasswdState extends State<FindPasswd> {
                                 padding: const EdgeInsets.only(right: 12.0),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFEB2B2),
+                                    backgroundColor: const Color(0xFFFEB2B2),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -103,7 +90,7 @@ class _FindPasswdState extends State<FindPasswd> {
                                       _showPhoneVerification = true;
                                     });
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 68,
                                     height: 24,
                                     child: Center(
@@ -111,7 +98,7 @@ class _FindPasswdState extends State<FindPasswd> {
                                         _showPhoneVerification
                                             ? '인증 완료'
                                             : '인증하기',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -130,7 +117,7 @@ class _FindPasswdState extends State<FindPasswd> {
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
-                                TextField(
+                                const TextField(
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -149,7 +136,7 @@ class _FindPasswdState extends State<FindPasswd> {
                                   padding: const EdgeInsets.only(right: 12.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFFEB2B2),
+                                      backgroundColor: const Color(0xFFFEB2B2),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -161,13 +148,13 @@ class _FindPasswdState extends State<FindPasswd> {
                                       });
                                       _showConfirmationDialog();
                                     },
-                                    child: Container(
+                                    child: SizedBox(
                                       width: 68,
                                       height: 24,
                                       child: Center(
                                         child: Text(
                                           _isPhoneVerified ? '인증 완료' : '인증하기',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -182,8 +169,8 @@ class _FindPasswdState extends State<FindPasswd> {
                           ),
                         ],
                         if (_isPhoneVerified) ...[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 30.0),
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
@@ -207,14 +194,14 @@ class _FindPasswdState extends State<FindPasswd> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(width * 0.01),
-                            child: Text(
+                            child: const Text(
                               '영어와 숫자로 조합된 비밀번호를 설정해주세요.',
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 24.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 24.0),
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
@@ -238,18 +225,18 @@ class _FindPasswdState extends State<FindPasswd> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(width * 0.01),
-                            child: Text(
+                            child: const Text(
                               '비밀번호 확인을 위해 한 번 더 입력해주세요.',
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.normal),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 80.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 80.0),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFFEB2B2),
+                              backgroundColor: const Color(0xFFFEB2B2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -259,10 +246,10 @@ class _FindPasswdState extends State<FindPasswd> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Login()),
+                                    builder: (context) => const Login()),
                               );
                             },
-                            child: Container(
+                            child: const SizedBox(
                               width: 320,
                               height: 40,
                               child: Center(
@@ -277,16 +264,16 @@ class _FindPasswdState extends State<FindPasswd> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 60.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 60.0),
                           ),
                         ],
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 150.0),
+                const Padding(
+                  padding: EdgeInsets.only(top: 150.0),
                 ),
               ],
             ),
