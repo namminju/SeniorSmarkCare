@@ -84,20 +84,20 @@ class _DynamicPageState extends State<DynamicPage> {
         children: [
           Text(
             widget.category,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           for (int i = 0; i < symptoms.length; i++)
             Column(
               children: [
-                SizedBox(height: 1),
+                const SizedBox(height: 1),
                 CheckboxListTile(
                   title: Text(symptoms[i]['display_name'] ?? 'No name'),
                   value: checkedList[i],
-                  activeColor: Color(0xFFFEB2B2),
+                  activeColor: const Color(0xFFFEB2B2),
                   onChanged: (bool? value) {
                     setState(() {
                       checkedList[i] = value ?? false;
@@ -105,10 +105,10 @@ class _DynamicPageState extends State<DynamicPage> {
                     });
                   },
                 ),
-                SizedBox(height: 1),
+                const SizedBox(height: 1),
               ],
             ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
         ],
       ),
     );
@@ -142,7 +142,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
 
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
-      backgroundColor: Color(0xFFF0F0F0),
+      backgroundColor: const Color(0xFFF0F0F0),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -158,11 +158,11 @@ class _SymptomCategoryState extends State<SymptomCategory> {
               children: [
                 for (int i = 1; i < categories.length; i++)
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFF0F0F0),
-                        side: BorderSide(width: 2, color: Colors.black),
+                        side: const BorderSide(width: 2, color: Colors.black),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -184,7 +184,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                                 height: width * 0.16,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Color(0xFFFEB2B2),
+                                    color: const Color(0xFFFEB2B2),
                                     border: Border.all(
                                       color: Colors.black,
                                       width: width * 0.01,
@@ -199,16 +199,16 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 categories[i],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 25,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 '   +   ',
                                 style: TextStyle(
                                   fontSize: 25,
@@ -222,18 +222,18 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                       ),
                     ),
                   ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(12),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2),
+                    backgroundColor: const Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 4,
-                    minimumSize: Size(280, 40),
-                    maximumSize: Size(300, 45),
+                    minimumSize: const Size(280, 40),
+                    maximumSize: const Size(300, 45),
                   ),
                   onPressed: () async {
                     update.clear(); // update 리스트 초기화
@@ -245,7 +245,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
 
                     _showSubmissionDialog(context);
                   },
-                  child: Text(
+                  child: const Text(
                     '제출',
                     style: TextStyle(
                       fontSize: 20,
@@ -261,20 +261,20 @@ class _SymptomCategoryState extends State<SymptomCategory> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2),
+                    backgroundColor: const Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 4,
-                    minimumSize: Size(110, 40),
-                    maximumSize: Size(130, 45),
+                    minimumSize: const Size(110, 40),
+                    maximumSize: const Size(130, 45),
                   ),
                   onPressed: () {
                     setState(() {
                       currentPageIndex = 0;
                     });
                   },
-                  child: Text(
+                  child: const Text(
                     '이전',
                     style: TextStyle(
                       fontSize: 20,
@@ -283,18 +283,18 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(10),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2),
+                    backgroundColor: const Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 4,
-                    minimumSize: Size(110, 40),
-                    maximumSize: Size(130, 45),
+                    minimumSize: const Size(110, 40),
+                    maximumSize: const Size(130, 45),
                   ),
                   onPressed: () async {
                     update.clear(); // update 리스트 초기화
@@ -306,7 +306,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
 
                     _showSubmissionDialog(context);
                   },
-                  child: Text(
+                  child: const Text(
                     '제출',
                     style: TextStyle(
                       fontSize: 20,
@@ -387,7 +387,7 @@ void _showSubmissionDialog(BuildContext context) {
 
       return AlertDialog(
         backgroundColor: Colors.white,
-        content: Container(
+        content: SizedBox(
           width: 288,
           height: 256,
           child: Column(
@@ -397,23 +397,23 @@ void _showSubmissionDialog(BuildContext context) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(' '),
-                  Text(' '),
+                  const Text(' '),
+                  const Text(' '),
                   Text(
                     isSuccess ? '알림' : '오류', // Show '알림' only if not successful
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(4),
+              const Padding(
+                padding: EdgeInsets.all(4),
               ),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.all(24),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.all(24),
               ),
               if (isSuccess) // Show categories only if successful
                 Row(
@@ -424,7 +424,7 @@ void _showSubmissionDialog(BuildContext context) {
                       if (update[i])
                         Text(
                           categories[i + 1] + ',',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -432,7 +432,7 @@ void _showSubmissionDialog(BuildContext context) {
                     if (update[3])
                       Text(
                         categories[4],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -442,13 +442,13 @@ void _showSubmissionDialog(BuildContext context) {
               Text(
                 isSuccess ? '제출이 완료되었습니다.' : '제출에 실패했습니다.\n다시 시도해주세요.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(24),
+              const Padding(
+                padding: EdgeInsets.all(24),
               ),
               if (isSuccess) // Show button only if successful
                 PageNavigationBigButton(
@@ -458,17 +458,17 @@ void _showSubmissionDialog(BuildContext context) {
               if (!isSuccess) // Show button only if not successful
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2),
+                    backgroundColor: const Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 4, // 그림자 높이 조정
-                    minimumSize: Size(240, 44), // 최소 크기 설정
+                    minimumSize: const Size(240, 44), // 최소 크기 설정
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(
+                  child: const Text(
                     '확인',
                     style: TextStyle(
                       fontSize: 16,

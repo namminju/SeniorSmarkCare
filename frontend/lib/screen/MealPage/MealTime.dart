@@ -35,7 +35,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
       final response = await http.get(
         // GET 요청으로 변경
         Uri.parse(apiUrl),
@@ -55,7 +55,6 @@ class _MealTimeState extends State<MealTime> {
         throw Exception('Failed to load meal alarm count');
       }
     } catch (e) {
-
       print('Error fetching meal alarm count: $e');
 
       // 오류 발생 시 기본값으로 초기화
@@ -73,7 +72,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: {'Authorization': 'Token $token'},
@@ -105,7 +104,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
 
       // Create a map of meal times with 1,2,...,5
       Map<String, String?> mealTimesMap = {};
@@ -141,7 +140,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
       final response = await http.put(
         Uri.parse(apiUrl),
         headers: {
@@ -641,12 +640,10 @@ class _MealTimeState extends State<MealTime> {
     return '$hour:$minute';
   }
 
-
   String _formatTimeForApi(TimeOfDay time) {
     final String hour = time.hour.toString().padLeft(2, '0');
     final String minute = time.minute.toString().padLeft(2, '0');
     final String formattedTime = '$hour:$minute:00';
     return formattedTime;
   }
-
 }
