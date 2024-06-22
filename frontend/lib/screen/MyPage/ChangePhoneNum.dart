@@ -15,9 +15,12 @@ class ChangePhoneNum extends StatefulWidget {
 }
 
 class _ChangePhoneNumState extends State<ChangePhoneNum> {
-  late String userName;
-  late String userPhone;
-  late String userPw;
+  String userName = '';
+  String userPhone = '';
+
+  bool _isPhoneVerified = false;
+  final TextEditingController _newPhoneNumberController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -43,13 +46,11 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
 
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
-          if (userData != null) {
-            setState(() {
-              userName = userData['userName']?.toString() ?? '';
-              userPhone = userData['userPhone']?.toString() ?? '';
-              userPw = userData['password']?.toString() ?? '';
-            });
-          }
+
+          setState(() {
+            userPhone = userData['userPhone']?.toString() ?? '';
+          });
+          print(userPhone);
         } else {
           print('Failed to load user data: ${response.statusCode}');
           // Handle failure
@@ -64,13 +65,40 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
     }
   }
 
-// class _ChangePhoneNumState extends State<ChangePhoneNum> {
-  bool _showPasswordVerification = false;
-  bool _isPasswordVerified = false;
-  final bool _showChangePhoneForm = false;
-  bool _isPhoneVerified = false; // 추가: 전화번호 인증 여부를 저장할 변수
-  final TextEditingController _newPhoneNumberController =
-      TextEditingController();
+//번호 바꾸기
+  Future<void> changePhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      String newPhoneNumber = _newPhoneNumberController.text;
+      String url =
+          '${RootUrlProvider.baseURL}/accounts/mypage/?mypage=$newPhoneNumber';
+
+      try {
+        var response = await http.get(
+          Uri.parse(url),
+          headers: {"accept": "*/*", "Authorization": "Token $token"},
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            userPhone = newPhoneNumber;
+          });
+          _showConfirmationDialog();
+        } else {
+          print('Failed to change phone number: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error changing phone number: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
+  }
 
   void _showConfirmationDialog() {
     showDialog(
@@ -82,6 +110,46 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
       },
     );
   }
+
+  // Future<void> changePhoneNumber(String newPassword) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token = prefs.getString('token');
+
+  //   if (token != null && token.isNotEmpty) {
+  //     Map<String, String> headers = {
+  //       "accept": "*/*",
+  //       "Authorization": "Token $token",
+  //       "Content-Type": "application/json"
+  //     };
+
+  //     Map<String, dynamic> requestBody = {
+  //       "new_phone_number": _newPhoneNumberController.text,
+  //       "password": newPassword,
+  //     };
+
+  //     try {
+  //       var response = await http.post(
+  //         Uri.parse('${RootUrlProvider.baseURL}/accounts/signup/'),
+  //         headers: headers,
+  //         body: jsonEncode(requestBody),
+  //       );
+
+  //       if (response.statusCode == 200) {
+  //         // 전화번호 변경 성공
+  //         _showConfirmationDialog();
+  //       } else {
+  //         print('Failed to change phone number: ${response.statusCode}');
+  //         // Handle failure
+  //       }
+  //     } catch (e) {
+  //       print('Error changing phone number: $e');
+  //       // Handle exceptions
+  //     }
+  //   } else {
+  //     print('Token not found');
+  //     // Handle case where token is not available
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +194,7 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Text(
-                            '변경 전 전화번호',
+                            '현재 전화번호',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -150,73 +218,57 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Text(
-                            '비밀번호 본인 확인',
+                            '본인 확인 및 전화번호 변경',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
+                        const Divider(
+                          color: Colors.black,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const TextField(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Color(0xFFF0F0F0),
-                                  hintText: '비밀번호',
-                                ),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                obscureText: true,
-                              ),
                               Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFEB2B2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Checkbox(
+                                      value: _isPhoneVerified,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          _isPhoneVerified = value ?? false;
+                                        });
+                                      },
+                                      activeColor: const Color.fromARGB(
+                                          255, 254, 178, 178),
                                     ),
-                                    elevation: 1,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _showPasswordVerification = true;
-                                    });
-                                    // 여기서 실제 비밀번호 검증 로직을 추가할 수 있습니다.
-                                    // 예를 들어, API 호출 등을 통해 검증할 수 있습니다.
-                                    _isPasswordVerified = true; // 임시로 확인 상태로 변경
-                                  },
-                                  child: SizedBox(
-                                    width: 68,
-                                    height: 24,
-                                    child: Center(
-                                      child: Text(
-                                        _showPasswordVerification
-                                            ? '인증 완료'
-                                            : '인증하기',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
+                                    const Text(
+                                      '변경하려는 번호가 본인 번호가 맞나요?',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        if (_isPasswordVerified) ...[
+                        if (_isPhoneVerified) ...[
                           const Padding(padding: EdgeInsets.only(top: 30)),
                           const Padding(
                             padding: EdgeInsets.all(5.0),
@@ -249,39 +301,6 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
                                   ),
                                   keyboardType: TextInputType.number,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Checkbox(
-                                          value: _isPhoneVerified,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              _isPhoneVerified = value ?? false;
-                                            });
-
-                                            ///입력 받은 번호를 기존 번호에서 수정해야햄
-                                          },
-                                          activeColor: const Color.fromARGB(
-                                              255, 254, 178, 178)),
-                                      const Text(
-                                        '본인 번호가 맞나요?',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const Text(
-                                        '*',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -290,24 +309,19 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
                             padding: const EdgeInsets.all(2.0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: _isPhoneVerified
-                                    ? const Color.fromARGB(255, 254, 178, 178)
-                                    : Colors.grey,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 254, 178, 178),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 elevation: 1,
                               ),
-                              onPressed: _isPhoneVerified
-                                  ? () {
-                                      // 여기서 전화번호 변경 로직을 처리할 수 있습니다.
-                                      // 예를 들어, API 호출 등을 통해 저장할 수 있습니다.
-                                      _showConfirmationDialog();
-                                    }
-                                  : null,
+                              onPressed: () {
+                                changePhoneNumber();
+                              },
                               child: const SizedBox(
                                 width: 320,
-                                height: 50,
+                                height: 52,
                                 child: Center(
                                   child: Text(
                                     '저장하기',
