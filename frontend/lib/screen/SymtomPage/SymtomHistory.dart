@@ -44,7 +44,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
 
       try {
         var response = await http.get(
-          Uri.parse('${RootUrlProvider.baseURL}/symptom/list/'),
+          Uri.parse('${RootUrlProvider.baseURL}/symptom/list/today'),
           headers: headers,
         );
 

@@ -21,6 +21,7 @@ class _MypageState extends State<Mypage> {
   late String userBirth = '';
   late String userGender = '';
   late String guardPhone = '';
+  late String hospitalCall = '';
   late String height = '';
   late String weight = '';
 
@@ -29,6 +30,42 @@ class _MypageState extends State<Mypage> {
     super.initState();
     fetchUserData();
     fetchNameNPhone();
+    fetchHospitalCall();
+  }
+
+  Future<void> fetchHospitalCall() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          setState(() {
+            hospitalCall = userData['hospitalCall']?.toString() ?? '';
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
   }
 
   Future<void> fetchNameNPhone() async {
@@ -206,6 +243,14 @@ class _MypageState extends State<Mypage> {
                           );
                         }),
                         buildInfoRow('보호자 전화번호', guardPhone, hasButton: true,
+                            onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChangeGuardianPhoneNum()),
+                          );
+                        }),
+                        buildInfoRow('주 병원 전화번호', hospitalCall, hasButton: true,
                             onPressed: () {
                           Navigator.push(
                             context,

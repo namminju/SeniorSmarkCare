@@ -236,14 +236,12 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                     maximumSize: Size(300, 45),
                   ),
                   onPressed: () async {
-                    update.clear();
-                    List<Future<void>> futures = [];
+                    update.clear(); // update 리스트 초기화
 
                     for (int i = 1; i < paramNames.length; i++) {
-                      futures.add(sendSymptoms(context, paramNames[i], i));
+                      await sendSymptoms(context, paramNames[i],
+                          i); // await을 사용하여 순차적으로 호출하고 기다림
                     }
-
-                    await Future.wait(futures);
 
                     _showSubmissionDialog(context);
                   },
@@ -299,16 +297,13 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                     maximumSize: Size(130, 45),
                   ),
                   onPressed: () async {
-                    update.clear();
-                    List<Future<void>> futures = [];
+                    update.clear(); // update 리스트 초기화
 
                     for (int i = 1; i < paramNames.length; i++) {
-                      futures.add(sendSymptoms(context, paramNames[i], i));
+                      await sendSymptoms(context, paramNames[i],
+                          i); // await을 사용하여 순차적으로 호출하고 기다림
                     }
 
-                    await Future.wait(futures);
-
-                    print(update);
                     _showSubmissionDialog(context);
                   },
                   child: Text(

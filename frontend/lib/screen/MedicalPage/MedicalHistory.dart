@@ -5,6 +5,10 @@ import './MedicalHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:frontend/Api/RootUrlProvider.dart';
+import 'dart:convert';
 
 class MedicalHistory extends StatefulWidget {
   @override
@@ -21,11 +25,13 @@ void customLaunchUrl(url) async {
 
 class _MedicalHistoryState extends State<MedicalHistory> {
   String username = '';
+  late String hospitalCall = '';
 
   @override
   void initState() {
     super.initState();
     _loadUsername();
+    fetchHospitalCall();
   }
 
   void _loadUsername() async {
@@ -33,6 +39,41 @@ class _MedicalHistoryState extends State<MedicalHistory> {
     setState(() {
       username = prefs.getString('username') ?? '';
     });
+  }
+
+  Future<void> fetchHospitalCall() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          setState(() {
+            hospitalCall = userData['hospitalCall']?.toString() ?? '';
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
   }
 
   @override
@@ -96,7 +137,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                         onPressed: () {
                           // 버튼이 클릭되었을 때 실행되는 동작
                           Uri messageLaunchUri =
-                              Uri(scheme: 'tel', path: '0200000000');
+                              Uri(scheme: 'tel', path: hospitalCall);
                           customLaunchUrl(messageLaunchUri);
                         },
                         child: Container(
