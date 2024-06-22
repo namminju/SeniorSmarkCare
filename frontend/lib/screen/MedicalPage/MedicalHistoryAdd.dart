@@ -7,6 +7,8 @@ import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
 
 class MedicalHistoryAdd extends StatefulWidget {
+  const MedicalHistoryAdd({super.key});
+
   @override
   _MedicalHistoryAdd createState() => _MedicalHistoryAdd();
 }
@@ -70,7 +72,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: const CustomAppBar(),
       body: Column(
         // Column 추가
@@ -84,10 +86,10 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                   mainAxisAlignment: MainAxisAlignment.start, // 세로 정렬을 위로 변경
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20),
                     ),
-                    Text(
+                    const Text(
                       '비대면 진료 내역',
                       style:
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
@@ -113,8 +115,8 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -129,7 +131,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                                 ],
                               ),
                             ),
-                            Divider(
+                            const Divider(
                               color: Colors.black,
                             ),
                             Center(
@@ -144,7 +146,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                                                         vertical: 8.0),
                                                     child: Text(
                                                       '${record['reservationDate']}   ${record['reservationTime']}',
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontSize: 28,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -153,8 +155,8 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                                                   ))
                                               .toList(),
                                         )
-                                      : Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                      : const Padding(
+                                          padding: EdgeInsets.symmetric(
                                               vertical: 8.0),
                                           child: Text(
                                             '진료기록이 없습니다.',

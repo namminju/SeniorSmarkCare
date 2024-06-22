@@ -7,11 +7,11 @@ import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
 
 import 'package:frontend/widget/AppBar.dart';
 
-import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
-
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
+import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
@@ -132,14 +132,16 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(width * 0.03),
+              padding: EdgeInsets.all(width * 0.02),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+
                     minimumSize: const Size(180, 160),
+
                     backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -149,7 +151,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SymptomHistory()),
+                      MaterialPageRoute(
+                          builder: (context) => const SymptomHistory()),
                     );
                   },
                   child: Column(
@@ -172,7 +175,9 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+
                     minimumSize: const Size(180, 160),
+
                     backgroundColor: const Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -284,7 +289,9 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+
                     minimumSize: const Size(180, 160),
+
                     backgroundColor: const Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -382,7 +389,9 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+
                     minimumSize: const Size(180, 160),
+
                     backgroundColor: const Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -392,7 +401,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MedicalHistory()),
+                      MaterialPageRoute(
+                          builder: (context) => const MedicalHistory()),
                     );
                   },
                   child: Column(children: [
@@ -414,7 +424,9 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(width * 0.04),
+
+              padding: EdgeInsets.all(width * 0.02),
+
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -428,7 +440,7 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Login()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                 );
               },
               child: const Text(

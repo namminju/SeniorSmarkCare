@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:frontend/screen/MedicalPage/MedicalHistoryAdd.dart';
+
 import 'package:frontend/widget/AppBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,8 @@ String day = DateFormat('yyyy-MM-dd').format(now);
 String time = DateFormat('HH:mm').format(now);
 
 class MedicalHistory extends StatefulWidget {
+  const MedicalHistory({super.key});
+
   @override
   _MedicalHistoryState createState() => _MedicalHistoryState();
 }
@@ -160,7 +163,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(
+              const Text(
                 '비대면 진료',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
               ),
@@ -175,8 +178,8 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           '비대면 진료를 원하시나요?',
                           style: TextStyle(
@@ -185,11 +188,11 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           ),
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         color: Colors.black,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           '아래 버튼을 이용하여 진료를 받아보세요!',
                           style: TextStyle(
@@ -198,10 +201,10 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFEB2B2),
+                          backgroundColor: const Color(0xFFFEB2B2),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -211,7 +214,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           sendAppointment(day, time);
                           customLaunchUrl('tel:$hospitalCall');
                         },
-                        child: Container(
+                        child: const SizedBox(
                           width: 320,
                           height: 52,
                           child: Center(
@@ -248,12 +251,12 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           children: [
                             Text(
                               '$username님의 이전 진료 예약 내역',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
+                            const Text(
                               '(최근 3개월)',
                               style: TextStyle(
                                 fontSize: 12,
@@ -263,7 +266,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           ],
                         ),
                       ),
-                      Divider(
+                      const Divider(
                         color: Colors.black,
                       ),
                       Center(
@@ -276,7 +279,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                             vertical: 8.0),
                                         child: Text(
                                           '${record['reservationDate']}   ${record['reservationTime']}',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 28,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -284,9 +287,9 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                       ))
                                   .toList()
                               : [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
                                     child: Text(
                                       '진료 기록이 없습니다.',
                                       style: TextStyle(
@@ -309,10 +312,10 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MedicalHistoryAdd()),
+                                          const MedicalHistoryAdd()),
                                 );
                               },
-                              child: Text(
+                              child: const Text(
                                 '더 보기',
                                 style: TextStyle(
                                   fontSize: 13,

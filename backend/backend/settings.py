@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-p=mp%c_o3kq^hzf^v9itz)%8+21ia$wo(#svbo8#-7n(mc3#nr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.30.1.43', '127.0.0.1']
 
 
 # Application definition
@@ -38,17 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
     'bootstrap4',
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
     'multiselectfield',
+    'corsheaders',
+    'accounts',
     'meal',
     'disease',
     'exercise',
     'symptom',
-    'corsheaders',
+    'medical',
 ]
 
 MIDDLEWARE = [
@@ -62,13 +63,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000' ,'http://localhost:8000' , 'http://10.0.2.2:8000', 'http://127.0.0.1:']
-
-
 ##CORS
 CORS_ORIGIN_ALLOW_ALL=True
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000' ,'http://localhost:8000' ]
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -169,3 +168,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+from decouple import config
+GOOGLE_PLACES_API_KEY = config('GOOGLE_PLACES_API_KEY')

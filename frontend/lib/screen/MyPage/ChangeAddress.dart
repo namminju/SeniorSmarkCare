@@ -17,7 +17,7 @@ class _ChangeAddress extends State<ChangeAddress> {
   late String userAddress = '';
   late String userDetailAddress = '';
   late String query = '';
-  Map<String, dynamic> responseData = {"predictions": [], "status": "OK"};
+  Map<String, dynamic> searData = {"predictions": [], "status": "OK"};
   @override
   void initState() {
     super.initState();

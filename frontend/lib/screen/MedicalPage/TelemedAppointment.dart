@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../widgets/PageNavigationBigButton.dart';
-import './MedicalHistory.dart'; // MedicalHistory 페이지 import
+import 'package:frontend/screen/MedicalPage/MedicalHistory.dart'; // MedicalHistory 페이지 import
 import 'package:frontend/widget/AppBar.dart';
 
 class TelemedAppointment extends StatelessWidget {
+  const TelemedAppointment({super.key});
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
@@ -11,20 +13,20 @@ class TelemedAppointment extends StatelessWidget {
     double height = screenSize.height; // 상대 수치를 이용하기 위함
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: const CustomAppBar(),
         body: Center(
             child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
             ),
             SizedBox(
               width: width * 0.8,
               height: height * 0.65,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 0, 0, 0),
+                  color: const Color.fromARGB(255, 0, 0, 0),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Center(
@@ -35,18 +37,18 @@ class TelemedAppointment extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFEB2B2),
+                backgroundColor: const Color(0xFFFEB2B2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 elevation: 4,
-                minimumSize: Size(320, 52),
-                maximumSize: Size(320, 52), // 최소 크기 설정
+                minimumSize: const Size(320, 52),
+                maximumSize: const Size(320, 52), // 최소 크기 설정
               ),
               onPressed: () {
                 // 버튼이 클릭되었을 때 실행되는 동작
@@ -54,8 +56,8 @@ class TelemedAppointment extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                      content: Container(
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                      content: SizedBox(
                         width: 288, // 원하는 너비 설정
                         height: 256, // 원하는 높이 설정
                         child: Column(
@@ -64,19 +66,19 @@ class TelemedAppointment extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   '',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
+                                const Text(
                                   '',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
+                                const Text(
                                   '알림',
                                   style: TextStyle(
                                       fontSize: 20,
@@ -87,31 +89,31 @@ class TelemedAppointment extends StatelessWidget {
                                     // 취소 버튼을 누르면 다이얼로그만 종료
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('X'),
+                                  child: const Text('X'),
                                 ),
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(4),
+                            const Padding(
+                              padding: EdgeInsets.all(4),
                             ),
-                            Divider(),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
+                            const Divider(),
+                            const Padding(
+                              padding: EdgeInsets.all(24),
                             ),
-                            Text(
+                            const Text(
                               '정말 종료하시겠습니까?',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
+                            const Padding(
+                              padding: EdgeInsets.all(24),
                             ),
                             // PageNavigationBigButton 위젯 생성하면서 텍스트와 nextPage 설정
                             PageNavigationBigButton(
-                              buttonText: '진료 종료하기',
-                              nextPage:
-                                  MedicalHistory(), // MedicalHistory 페이지로 이동
-                            ),
+                                buttonText: '진료 종료하기',
+                                nextPage:
+                                    const MedicalHistory() // MedicalHistory 페이지로 이동
+                                ),
                           ],
                         ),
                       ),
@@ -122,7 +124,7 @@ class TelemedAppointment extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     '진료 종료',
                     style: TextStyle(
                       fontSize: 25,
@@ -130,7 +132,7 @@ class TelemedAppointment extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 8), // 텍스트와 이미지 사이의 간격 조절
+                  const SizedBox(width: 8), // 텍스트와 이미지 사이의 간격 조절
                   Image.asset(
                     'images/medicalImg/call-slash.png', // 이미지 경로
                     height: 25, // 이미지 높이
