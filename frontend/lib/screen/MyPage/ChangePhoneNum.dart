@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
+import 'package:frontend/widgets/CloseDialog.dart';
 import 'package:frontend/widgets/NoticeDialog.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +16,7 @@ class ChangePhoneNum extends StatefulWidget {
 }
 
 class _ChangePhoneNumState extends State<ChangePhoneNum> {
-  String userName = '';
-  String userPhone = '';
+  late String userPhone = '';
 
   bool _isPhoneVerified = false;
   final TextEditingController _newPhoneNumberController =
@@ -25,10 +25,10 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
   @override
   void initState() {
     super.initState();
-    fetchNameNPhone();
+    fetchUserPhone();
   }
 
-  Future<void> fetchNameNPhone() async {
+  Future<void> fetchUserPhone() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -40,17 +40,15 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
 
       try {
         var response = await http.get(
-          Uri.parse('${RootUrlProvider.baseURL}/accounts/mypage/'),
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/phone/'),
           headers: headers,
         );
 
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
-
           setState(() {
             userPhone = userData['userPhone']?.toString() ?? '';
           });
-          print(userPhone);
         } else {
           print('Failed to load user data: ${response.statusCode}');
           // Handle failure
@@ -69,24 +67,29 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
   Future<void> changePhoneNumber() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+    String newPhoneNumber = _newPhoneNumberController.text;
 
     if (token != null && token.isNotEmpty) {
-      String newPhoneNumber = _newPhoneNumberController.text;
-      String url =
-          '${RootUrlProvider.baseURL}/accounts/mypage/?mypage=$newPhoneNumber';
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token",
+        "Content-Type": "application/json"
+      };
 
       try {
-        var response = await http.get(
-          Uri.parse(url),
-          headers: {"accept": "*/*", "Authorization": "Token $token"},
+        var response = await http.put(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/phone/'),
+          headers: headers,
+          body: jsonEncode({
+            'userPhone': newPhoneNumber,
+          }),
         );
 
         if (response.statusCode == 200) {
-          setState(() {
-            userPhone = newPhoneNumber;
-          });
           _showConfirmationDialog();
+          fetchUserPhone();
         } else {
+          _showErrorDialog();
           print('Failed to change phone number: ${response.statusCode}');
           // Handle failure
         }
@@ -111,45 +114,17 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
     );
   }
 
-  // Future<void> changePhoneNumber(String newPassword) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? token = prefs.getString('token');
-
-  //   if (token != null && token.isNotEmpty) {
-  //     Map<String, String> headers = {
-  //       "accept": "*/*",
-  //       "Authorization": "Token $token",
-  //       "Content-Type": "application/json"
-  //     };
-
-  //     Map<String, dynamic> requestBody = {
-  //       "new_phone_number": _newPhoneNumberController.text,
-  //       "password": newPassword,
-  //     };
-
-  //     try {
-  //       var response = await http.post(
-  //         Uri.parse('${RootUrlProvider.baseURL}/accounts/signup/'),
-  //         headers: headers,
-  //         body: jsonEncode(requestBody),
-  //       );
-
-  //       if (response.statusCode == 200) {
-  //         // 전화번호 변경 성공
-  //         _showConfirmationDialog();
-  //       } else {
-  //         print('Failed to change phone number: ${response.statusCode}');
-  //         // Handle failure
-  //       }
-  //     } catch (e) {
-  //       print('Error changing phone number: $e');
-  //       // Handle exceptions
-  //     }
-  //   } else {
-  //     print('Token not found');
-  //     // Handle case where token is not available
-  //   }
-  // }
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CloseDialog(
+          text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
+        );
+      },
+    );
+    print(userPhone);
+  }
 
   @override
   Widget build(BuildContext context) {
