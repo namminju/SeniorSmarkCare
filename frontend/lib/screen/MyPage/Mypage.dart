@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Api/RootUrlProvider.dart';
@@ -10,7 +11,7 @@ import 'package:frontend/screen/MyPage/ChangeGuardianPhoneNum.dart';
 import 'package:logging/logging.dart';
 
 class Mypage extends StatefulWidget {
-  const Mypage({Key? key}) : super(key: key);
+  const Mypage({super.key});
 
   @override
   _MypageState createState() => _MypageState();
@@ -129,9 +130,7 @@ class _MypageState extends State<Mypage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('마이페이지'),
-        ),
+        appBar: const CustomAppBar(),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
