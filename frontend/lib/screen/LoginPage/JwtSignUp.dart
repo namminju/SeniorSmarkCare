@@ -98,7 +98,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 50),
                   child: Container(
                     width: 320,
                     decoration: BoxDecoration(
@@ -173,9 +173,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     height: 24,
                                     child: Center(
                                       child: Text(
-                                        _showPhoneVerification
-                                            ? '인증 완료'
-                                            : '인증하기',
+                                        _showPhoneVerification ? '확인 완료' : '확인',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -191,69 +189,13 @@ class _JwtSignUpState extends State<JwtSignUp> {
                         ),
                         if (_showPhoneVerification) ...[
                           Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    filled: true,
-                                    fillColor: Color(0xFFF0F0F0),
-                                    hintText: '인증번호 입력',
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFFEB2B2),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      elevation: 1,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isPhoneVerified = true;
-                                      });
-                                      _showConfirmationDialog();
-                                    },
-                                    child: Container(
-                                      width: 68,
-                                      height: 24,
-                                      child: Center(
-                                        child: Text(
-                                          _isPhoneVerified ? '인증 완료' : '인증하기',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        if (_isPhoneVerified) ...[
-                          Padding(
                             padding: const EdgeInsets.only(top: 30.0),
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
                                 TextField(
                                   controller: passwordController1,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -266,7 +208,6 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  keyboardType: TextInputType.number,
                                 ),
                               ],
                             ),
@@ -286,6 +227,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               children: [
                                 TextField(
                                   controller: passwordController2,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
@@ -298,7 +240,6 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  keyboardType: TextInputType.number,
                                 ),
                               ],
                             ),

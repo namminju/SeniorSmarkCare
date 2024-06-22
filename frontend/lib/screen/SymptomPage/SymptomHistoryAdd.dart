@@ -52,8 +52,10 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
 
           setState(() {
             var tempData = json.decode(utf8Data);
-            if (tempData[0].isNotEmpty) {
-              userData = tempData[0];
+            if (tempData.isNotEmpty) {
+              if (tempData[0].isNotEmpty) {
+                userData = tempData[0];
+              }
             }
           });
         } else {

@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/widgets/NoticeDialog.dart';
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Api/RootUrlProvider.dart';
+import 'dart:convert';
 
-class ChangeBodyInfo extends StatefulWidget {
+class ChangeHospitalNum extends StatefulWidget {
   @override
-  _ChangeBodyInfo createState() => _ChangeBodyInfo();
+  _ChangeHospitalNumState createState() => _ChangeHospitalNumState();
 }
 
-class _ChangeBodyInfo extends State<ChangeBodyInfo> {
-  TextEditingController heightController = TextEditingController();
-  TextEditingController weightController = TextEditingController();
+class _ChangeHospitalNumState extends State<ChangeHospitalNum> {
+  TextEditingController hospitalCallController = TextEditingController();
 
-  late String userBirth = '';
-  late String userGender = '';
-  late String guardPhone = '';
-  late String height = '';
-  late String weight = '';
+  late String hospitalCall = '';
 
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    fetchHospitalCall();
   }
 
-  Future<void> fetchUserData() async {
+  Future<void> fetchHospitalCall() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -40,31 +34,14 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
 
       try {
         var response = await http.get(
-          Uri.parse('${RootUrlProvider.baseURL}/accounts/addinfo/'),
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
           headers: headers,
         );
 
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
           setState(() {
-            userBirth = userData['userBirth']?.toString() ?? '0001-01-01';
-            userGender = userData['userGender']?.toString() ?? '';
-            guardPhone = userData['guardPhone']?.toString() ?? '0100000000';
-            height = userData['height']?.toString() ?? '0';
-            weight = userData['weight']?.toString() ?? '0';
-
-            // 값이 모두 0이면 미정으로 설정
-            if (height == '0' && weight == '0') {
-              height = '';
-              weight = '';
-            } else {
-              // 하나만 값이 있는 경우 빈 문자열로 초기화
-              if (height != '0' && weight == '0') {
-                weight = '';
-              } else if (height == '0' && weight != '0') {
-                height = '';
-              }
-            }
+            hospitalCall = userData['hospitalCall']?.toString() ?? '미정';
           });
         } else {
           print('Failed to load user data: ${response.statusCode}');
@@ -80,7 +57,7 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
     }
   }
 
-  Future<void> _sendHospitalCall(String height, String weight) async {
+  Future<void> _sendHospitalCall(String hospitalCall) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -91,18 +68,13 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
         "Authorization": "Token $token"
       };
 
-      var body = json.encode({
-        "userBirth": userBirth,
-        "userGender": userGender,
-        "guardPhone": guardPhone,
-        "height": int.parse(height),
-        "weight": int.parse(weight)
-      });
+      var body = json.encode({'hospitalCall': hospitalCall});
       print(headers);
       print(body);
+
       try {
         var response = await http.patch(
-          Uri.parse('${RootUrlProvider.baseURL}/accounts/addinfo/'),
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
           headers: headers,
           body: body,
         );
@@ -127,7 +99,7 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
       context: context,
       builder: (BuildContext context) {
         return NoticeDialog(
-          text: '키/몸무게 변경이\n완료되었습니다.',
+          text: '전화번호 변경이\n완료되었습니다.',
         );
       },
     );
@@ -138,43 +110,26 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
       context: context,
       builder: (BuildContext context) {
         return NoticeDialog(
-          text: '키/몸무게 변경이 실패하였습니다.\n 다시 시도해주세요.',
+          text: '전화번호 변경이 실패하였습니다.\n 다시 시도해주세요.',
         );
       },
     );
   }
 
+  bool _isPhoneNumberValid(String phoneNumber) {
+    final RegExp phoneExp = RegExp(r'^01[0-9]{8,9}$');
+    return phoneExp.hasMatch(phoneNumber);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
+    Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
-
-    void _showConfirmationDialog() {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return NoticeDialog(
-            text: '신체 정보 변경이\n 완료되었습니다.', // 매개변수로 텍스트 전달
-          );
-        },
-      );
-    }
-
-    void _showErrorDialog() {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return NoticeDialog(
-            text: '신체 정보 변경이 실패하였습니다. 다시 시도해주세요.', // 매개변수로 텍스트 전달
-          );
-        },
-      );
-    }
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: const CustomAppBar(),
+        appBar: CustomAppBar(), // CustomAppBar()으로 변경
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -190,7 +145,7 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
                   child: Text(
-                    '[신체정보 변경]',
+                    '[주 병원 전화번호 변경]',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
                   ),
@@ -209,56 +164,32 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
-                            '신장',
+                            '변경 전 전화번호',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
+                        Divider(
+                          color: Colors.black,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              TextField(
-                                controller: heightController,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Color(0xFFF0F0F0),
-                                  labelText: '',
-                                ),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: Text(
-                                  'cm',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            '$hospitalCall',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+                        Padding(padding: const EdgeInsets.only(top: 30)),
                         Padding(padding: const EdgeInsets.only(top: 30)),
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
-                            '몸무게',
+                            '변경하고자 하는 전화번호',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -271,40 +202,26 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
                             alignment: Alignment.centerRight,
                             children: [
                               TextField(
-                                controller: weightController,
+                                controller: hospitalCallController,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                   ),
                                   filled: true,
                                   fillColor: Color(0xFFF0F0F0),
-                                  labelText: '',
+                                  hintText: '전화번호',
                                 ),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: Text(
-                                  'kg',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
-                                ),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 120.0),
+                          padding: const EdgeInsets.only(top: 200.0),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -315,8 +232,12 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
                             elevation: 4, // 그림자 높이 조정
                           ),
                           onPressed: () {
-                            _sendHospitalCall(
-                                heightController.text, weightController.text);
+                            String phoneNumber = hospitalCallController.text;
+                            if (_isPhoneNumberValid(phoneNumber)) {
+                              _sendHospitalCall(phoneNumber);
+                            } else {
+                              _showErrorDialog();
+                            }
                           },
                           child: Container(
                             width: 320,
@@ -333,12 +254,12 @@ class _ChangeBodyInfo extends State<ChangeBodyInfo> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 80.0),
-                        ),
                       ],
                     ),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50.0),
                 ),
               ],
             ),

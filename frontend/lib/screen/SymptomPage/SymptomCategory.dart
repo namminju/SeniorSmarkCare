@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
 import 'package:frontend/widgets/PageNavigationBigButton.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:intl/intl.dart';

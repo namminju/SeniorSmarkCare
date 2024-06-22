@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import './TelemedAppointment.dart';
-import './MedicalHistoryAdd.dart';
+
+import 'package:frontend/screen/MedicalPage/MedicalHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/PageNavigationBigButton.dart';
-import 'SymtomCategory.dart';
-import 'SymtomHistoryAdd.dart';
+import 'SymptomCategory.dart';
+import 'SymptomHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 
@@ -54,8 +54,12 @@ class _SymptomHistoryState extends State<SymptomHistory> {
 
           setState(() {
             var tempData = json.decode(utf8Data);
-            if (tempData[0].isNotEmpty) {
-              userData = tempData[0];
+            if (tempData.isNotEmpty) {
+              if (tempData[0].isNotEmpty) {
+                userData = tempData[0];
+              } else {
+                userData = {};
+              } // 비어 있는 경우 빈 Map으로 초기화
             }
           });
         } else {
