@@ -109,3 +109,12 @@ class AddressSearchView(APIView):
             return Response({"error": "Failed to fetch data from Google Places API"}, status=response.status_code)
         
         return Response(response.json())
+    
+class UserPhoneView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserPhoneSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        return self.request.user
+    

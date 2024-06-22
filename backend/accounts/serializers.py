@@ -84,3 +84,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAddress
         fields = ['postal_code', 'city', 'district', 'neighborhood', 'road_address', 'building_number', 'detailed_address']
+
+class UserPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['userPhone']
