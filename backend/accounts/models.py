@@ -86,7 +86,7 @@ class UserExtra(models.Model):
 
 class UserAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    postal_code = models.CharField(max_length=10, verbose_name="우편번호")
+    postal_code = models.CharField(max_length=10, verbose_name="우편번호", blank=True, null=True)
     city = models.CharField(max_length=100, verbose_name="시/도", blank=True, null=True)
     district = models.CharField(max_length=100, verbose_name="시/군/구", blank=True, null=True)
     neighborhood = models.CharField(max_length=100, verbose_name="동/읍/면", blank=True, null=True)
