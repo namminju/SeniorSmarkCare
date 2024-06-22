@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../widgets/PageNavigationBigButton.dart';
 import 'SymtomCategory.dart';
 import 'SymtomHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:logging/logging.dart';
+
+final Logger _logger = Logger('Symtom');
 
 class SymptomHistory extends StatefulWidget {
   @override
@@ -59,13 +61,13 @@ class _SymptomHistoryState extends State<SymptomHistory> {
             }
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.warning('Failed to load user data: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
     }
   }
 
@@ -78,12 +80,12 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                 children: [
                   Text(
                     category,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Wrap(
                       children: List<Widget>.generate(
@@ -100,7 +102,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                               : symptoms.length - 1)
                                       ? ', '
                                       : ''),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -124,9 +126,9 @@ class _SymptomHistoryState extends State<SymptomHistory> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar:
-            CustomAppBar(), // Assuming CustomAppBar is correctly implemented
+            const CustomAppBar(), // Assuming CustomAppBar is correctly implemented
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -140,13 +142,13 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                       'images/mainPageImg/grandma.png',
                       width: width * 0.1,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
                       '$username님',
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w600),
                     ),
-                    Text(
+                    const Text(
                       '의 건강기록',
                       style:
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w300),
@@ -164,8 +166,8 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -179,7 +181,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                             ],
                           ),
                         ),
-                        Divider(color: Colors.black),
+                        const Divider(color: Colors.black),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: userData.isNotEmpty
@@ -194,7 +196,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                       '손/발 :', userData['hand_foot_symptoms']),
                                 ]
                               : [
-                                  Text(
+                                  const Text(
                                     '오늘 등록된 증상이 없습니다.',
                                     style: TextStyle(
                                       fontSize: 20,
@@ -217,7 +219,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                     ),
                                   );
                                 },
-                                child: Text(
+                                child: const Text(
                                   '더보기',
                                   style: TextStyle(
                                     fontSize: 13,
@@ -244,8 +246,8 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Text(
                             '혹시 더 아픈 부위가 있으신가요?',
                             style: TextStyle(
@@ -254,9 +256,9 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                             ),
                           ),
                         ),
-                        Divider(color: Colors.black),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Divider(color: Colors.black),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Text(
                             '아래 버튼을 이용하여 추가해보세요!',
                             style: TextStyle(
@@ -265,10 +267,10 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFEB2B2),
+                            backgroundColor: const Color(0xFFFEB2B2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -279,9 +281,9 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  contentPadding: EdgeInsets.all(20),
+                                  contentPadding: const EdgeInsets.all(20),
                                   insetPadding: EdgeInsets.zero,
-                                  backgroundColor: Color(0XFFF0F0F0),
+                                  backgroundColor: const Color(0XFFF0F0F0),
                                   content: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -291,7 +293,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             '오늘 나의 상태는?',
                                             style: TextStyle(
                                               fontSize: 16,
@@ -302,11 +304,11 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text('X'),
+                                            child: const Text('X'),
                                           ),
                                         ],
                                       ),
-                                      Divider(color: Colors.black),
+                                      const Divider(color: Colors.black),
                                       SizedBox(
                                         width: 300,
                                         height: 550,
@@ -322,7 +324,7 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                               },
                             );
                           },
-                          child: Container(
+                          child: const SizedBox(
                             width: 320,
                             height: 52,
                             child: Center(

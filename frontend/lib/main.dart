@@ -2,9 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screen/MainScreen.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
+import 'package:logging/logging.dart';
 
 void main() {
+  _setupLogging();
   runApp(const MyApp());
+}
+
+void _logToConsole(LogRecord record) {
+  final message = '${record.level.name}: ${record.time}: ${record.message}';
+  // print 대신 아래와 같이 로그 메시지를 콘솔에 기록하는 다른 방법 사용
+  debugPrint(message);
+}
+
+void _setupLogging() {
+  Logger.root.level = Level.ALL; // 로그 레벨 설정
+  Logger.root.onRecord.listen((record) {
+    _logToConsole(record);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +31,7 @@ class MyApp extends StatelessWidget {
       future: checkLoginStatus(),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return MaterialApp(
+          return const MaterialApp(
             home: Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
@@ -26,7 +41,7 @@ class MyApp extends StatelessWidget {
         } else {
           if (snapshot.hasError) {
             // 에러 처리 로직 추가
-            return MaterialApp(
+            return const MaterialApp(
               home: Scaffold(
                 body: Center(
                   child: Text('에러 발생!'),
@@ -37,7 +52,7 @@ class MyApp extends StatelessWidget {
             bool isLoggedIn = snapshot.data ?? false;
             return MaterialApp(
               title: '홀로똑똑',
-              home: isLoggedIn ? MainScreen() : Login(),
+              home: isLoggedIn ? const MainScreen() : const Login(),
             );
           }
         }

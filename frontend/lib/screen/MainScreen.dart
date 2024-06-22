@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,6 +26,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   String username = '';
+  final Logger _logger = Logger('_MainScreenState');
 
   @override
   void initState() {
@@ -42,8 +44,8 @@ class _MainScreenState extends State<MainScreen> {
         "Authorization": "Token $token"
       };
 
-      print('token: $token');
-      print('$header');
+      _logger.info('token: $token');
+      _logger.info('$header');
       try {
         var response = await http.get(
             Uri.parse('${RootUrlProvider.baseURL}/accounts/mypage/'),
@@ -51,20 +53,20 @@ class _MainScreenState extends State<MainScreen> {
 
         if (response.statusCode == 200) {
           var userData = json.decode(response.body);
-          print('$userData');
+          _logger.info('$userData');
           setState(() {
             username = userData['userName']; // 수정: 사용자 이름 업데이트
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          _logger.severe('Failed to load user data: ${response.statusCode}');
           // 실패 처리 로직 추가
         }
       } catch (e) {
-        print('Error loading user data: $e');
+        _logger.severe('Error loading user data: $e');
         // 예외 처리 로직 추가
       }
     } else {
-      print('Token not found');
+      _logger.warning('Token not found');
       // 토큰 없음 처리 로직 추가
     }
     await prefs.setString('username', username);
@@ -86,7 +88,7 @@ class _MainScreenState extends State<MainScreen> {
             Center(
               child: Row(
                 children: [
-                  Padding(padding: EdgeInsets.all(10)),
+                  const Padding(padding: EdgeInsets.all(10)),
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
@@ -94,7 +96,7 @@ class _MainScreenState extends State<MainScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Mypage(),
+                            builder: (context) => const Mypage(),
                           ),
                         );
                       },
@@ -104,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(5)),
+                  const Padding(padding: EdgeInsets.all(5)),
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
@@ -112,13 +114,13 @@ class _MainScreenState extends State<MainScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Mypage(),
+                            builder: (context) => const Mypage(),
                           ),
                         );
                       },
                       child: Text(
                         username.isNotEmpty ? '$username님' : '사용자 이름 없음',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
                         ),
@@ -136,7 +138,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
+                    minimumSize: const Size(180, 160),
                     backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -169,7 +171,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
+                    minimumSize: const Size(180, 160),
                     backgroundColor: const Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -281,7 +283,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
+                    minimumSize: const Size(180, 160),
                     backgroundColor: const Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -379,7 +381,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(160, 160),
+                    minimumSize: const Size(180, 160),
                     backgroundColor: const Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
