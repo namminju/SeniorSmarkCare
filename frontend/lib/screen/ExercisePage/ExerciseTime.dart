@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widget/AppBar.dart';
-import 'package:frontend/screen/MainScreen.dart';
-//
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/Api/RootUrlProvider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-//
+
+import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:frontend/widget/AppBar.dart';
+import 'package:frontend/screen/MainScreen.dart';
 
 class ExerciseTime extends StatefulWidget {
   const ExerciseTime({super.key});
 
   @override
-  _ExerciseTime createState() => _ExerciseTime();
+  _ExerciseTimeState createState() => _ExerciseTimeState();
 }
 
-class _ExerciseTime extends State<ExerciseTime> {
+class _ExerciseTimeState extends State<ExerciseTime> {
   List<TimeOfDay?> _selectedTimes = []; // 선택된 시간을 저장할 리스트
-  int _selectedCount = 1;
-  final List<int> _alarmcnt = [1, 2, 3, 4, 5];
-  int exerciseAlarmCount = 1;
+  int _selectedCount = 1; // 초기 알람 횟수 설정
+  final List<int> _alarmcnt = [1, 2, 3, 4, 5]; // 선택할 수 있는 알람 횟수 목록
+  int exerciseAlarmCount = 1; // 초기 알람 횟수 설정
 
   @override
   void initState() {
     super.initState();
     _fetchExerciseAlarmCount(); // 초기 알람 횟수를 백엔드에서 가져오는 함수 호출
+    _fetchExerciseTimes(); // 초기 운동 시간을 백엔드에서 가져오는 함수 호출
   }
 
   // 백엔드에서 알람 횟수 가져오기
@@ -34,7 +34,6 @@ class _ExerciseTime extends State<ExerciseTime> {
       final token = prefs.getString('token') ?? '';
       const apiUrl = '${RootUrlProvider.baseURL}/exercise/alarm-cnt/';
       final response = await http.get(
-        // GET 요청으로 변경
         Uri.parse(apiUrl),
         headers: {'Authorization': 'Token $token'},
       );
@@ -45,7 +44,8 @@ class _ExerciseTime extends State<ExerciseTime> {
         setState(() {
           exerciseAlarmCount = exerciseAlarmCnt;
           _selectedCount = exerciseAlarmCnt;
-          _selectedTimes = List.generate(_selectedCount, (_) => null);
+          _selectedTimes = List.generate(
+              _selectedCount, (_) => const TimeOfDay(hour: 0, minute: 0));
         });
       } else {
         throw Exception('Failed to load exercise alarm count');
@@ -56,8 +56,77 @@ class _ExerciseTime extends State<ExerciseTime> {
       setState(() {
         exerciseAlarmCount = 1;
         _selectedCount = 1;
-        _selectedTimes = List.generate(_selectedCount, (_) => null);
+        _selectedTimes = List.generate(
+            _selectedCount, (_) => const TimeOfDay(hour: 0, minute: 0));
       });
+    }
+  }
+
+  // 백엔드에서 운동 시간 가져오기
+  void _fetchExerciseTimes() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      const apiUrl = '${RootUrlProvider.baseURL}/exercise/time/';
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {'Authorization': 'Token $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final times = (jsonData['exerciseTime'] ?? []) as List<dynamic>;
+        setState(() {
+          _selectedTimes = times
+              .map((time) => time != null
+                  ? TimeOfDay(
+                      hour: int.parse(time.split(':')[0]),
+                      minute: int.parse(time.split(':')[1]),
+                    )
+                  : const TimeOfDay(hour: 0, minute: 0))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load exercise times');
+      }
+    } catch (e) {
+      print('Error fetching exercise times: $e');
+    }
+  }
+
+  // 운동 시간을 백엔드에 저장
+  _saveExerciseTimes() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      const apiUrl = '${RootUrlProvider.baseURL}/exercise/time/';
+
+      // Create a map of exercise times with exerciseTime1, exerciseTime2, ...
+      Map<String, String?> exerciseTimesMap = {};
+      for (int i = 0; i < _selectedTimes.length; i++) {
+        exerciseTimesMap['exerciseTime${i + 1}'] = _selectedTimes[i] != null
+            ? _formatTimeForApi(_selectedTimes[i]!)
+            : null;
+      }
+
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Token $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(exerciseTimesMap),
+      );
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        print('Exercise times saved successfully');
+      } else {
+        throw Exception('Failed to save exercise times');
+      }
+    } catch (e) {
+      print('Error saving exercise times: $e');
     }
   }
 
@@ -79,6 +148,7 @@ class _ExerciseTime extends State<ExerciseTime> {
       if (response.statusCode == 200) {
         // 성공적으로 저장됨
         print('Exercise alarm count saved successfully');
+        //await _saveExerciseTimes();
       } else {
         throw Exception('Failed to save exercise alarm count');
       }
@@ -91,7 +161,6 @@ class _ExerciseTime extends State<ExerciseTime> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      //안전한 영역의 확보
       child: Scaffold(
         appBar: const CustomAppBar(),
         backgroundColor: Colors.white,
@@ -173,14 +242,14 @@ class _ExerciseTime extends State<ExerciseTime> {
                           ),
                           width: 120,
                           child: DropdownButton<int>(
-                            dropdownColor: Colors.white, //
+                            dropdownColor: Colors.white,
                             value: _selectedCount,
                             onChanged: (int? newValue) {
                               setState(() {
                                 _selectedCount = newValue!;
                                 _selectedTimes = List.generate(
                                   _selectedCount,
-                                  (_) => null, // 선택된 시간 초기화
+                                  (_) => null,
                                 );
                               });
                             },
@@ -239,9 +308,6 @@ class _ExerciseTime extends State<ExerciseTime> {
                   const SizedBox(height: 4),
                   const Divider(height: 4, color: Colors.black),
                   const SizedBox(height: 8),
-                  //위 드롭박스에서 설정한 횟수만큼 시간 받기
-                  //ex. 드롭박스에서 3을 선택했다면
-                  // 3개의 시간 선택이 가능한 버튼 띄우기
                   Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,16 +370,16 @@ class _ExerciseTime extends State<ExerciseTime> {
             ),
           ],
         ),
-        ///////////////////////////////////
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFEB2B2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 4),
+              backgroundColor: const Color(0xFFFEB2B2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 4,
+            ),
             onPressed: () async {
               bool allTimesEntered = true;
               for (int i = 0; i < _selectedCount; i++) {
@@ -330,12 +396,14 @@ class _ExerciseTime extends State<ExerciseTime> {
                     return AlertDialog(
                       backgroundColor: Colors.white,
                       title: const Center(
-                        child: Text('알림',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                            textAlign: TextAlign.center),
+                        child: Text(
+                          '알림',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       content: const Column(
                         mainAxisSize: MainAxisSize.min,
@@ -345,7 +413,9 @@ class _ExerciseTime extends State<ExerciseTime> {
                           Text(
                             '\n모든 시간을 기입해주세요!',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -382,10 +452,10 @@ class _ExerciseTime extends State<ExerciseTime> {
               }
 
               try {
-                // 모든 시간이 입력되었을 때 선택된 횟수를 저장하고 앱 상태를 업데이트합니다.
                 await _saveExerciseAlarmCount(_selectedCount);
 
-                // 저장 완료 시 사용자에게 메시지 표시
+                await _saveExerciseTimes();
+
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -427,7 +497,8 @@ class _ExerciseTime extends State<ExerciseTime> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const MainScreen()),
+                                  builder: (context) => const MainScreen(),
+                                ),
                               );
                             },
                             style: TextButton.styleFrom(
@@ -451,53 +522,54 @@ class _ExerciseTime extends State<ExerciseTime> {
                 );
               } catch (e) {
                 print('Error saving exercise alarm count: $e');
-                // 저장 실패 시 예외 처리
                 showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        backgroundColor: Colors.white,
-                        title: const Center(
-                          child: Text(
-                            '알림',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Center(
+                        child: Text(
+                          '알림',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      actions: [
+                        Container(
+                          width: 240,
+                          height: 44,
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MainScreen(),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFFFEB2B2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
-                            textAlign: TextAlign.center,
+                            child: const Text(
+                              '확인',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ),
-                        actions: [
-                          Container(
-                            width: 240,
-                            height: 44,
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainScreen()),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFFFEB2B2),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text(
-                                '확인',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    });
+                      ],
+                    );
+                  },
+                );
               }
             },
             child: Container(
@@ -526,17 +598,16 @@ class _ExerciseTime extends State<ExerciseTime> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: const Color(0xFFFEB2B2), // 배경색 설정
-            colorScheme:
-                const ColorScheme.light(primary: Color(0xFFFEB2B2)), // 기타 색상 설정
+            primaryColor: const Color(0xFFFEB2B2),
+            colorScheme: const ColorScheme.light(primary: Color(0xFFFEB2B2)),
             buttonTheme: const ButtonThemeData(
-              textTheme: ButtonTextTheme.primary, // 버튼 텍스트 테마 설정
+              textTheme: ButtonTextTheme.primary,
             ),
             timePickerTheme: TimePickerThemeData(
-              // 이 부분에서 entertime 스타일 설정
-              hourMinuteShape: const CircleBorder(), // 시간 선택 버튼 모양
+              hourMinuteShape: const CircleBorder(),
               dayPeriodShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0)), // AM/PM 버튼 모양
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
           ),
           child: child!,
@@ -546,9 +617,10 @@ class _ExerciseTime extends State<ExerciseTime> {
     if (pickedTime != null) {
       setState(() {
         if (_selectedTimes.length > index) {
-          _selectedTimes[index] = pickedTime; // 선택된 시간 리스트에 저장
+          _selectedTimes[index] = pickedTime;
         }
       });
+      print('선택된 시간: ${_formatTime(pickedTime)}');
     }
   }
 
@@ -559,6 +631,9 @@ class _ExerciseTime extends State<ExerciseTime> {
   }
 
   String _formatTimeForApi(TimeOfDay time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
+    final String hour = time.hour.toString().padLeft(2, '0');
+    final String minute = time.minute.toString().padLeft(2, '0');
+    final String formattedTime = '$hour:$minute:00';
+    return formattedTime;
   }
 }

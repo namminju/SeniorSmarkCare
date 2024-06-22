@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class MealRecommend extends StatefulWidget {
   const MealRecommend({super.key});
 
@@ -9,6 +14,51 @@ class MealRecommend extends StatefulWidget {
 }
 
 class _MealRecommend extends State<MealRecommend> {
+  String username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> header = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      print('token: $token');
+      print('$header');
+      try {
+        var response = await http.get(
+            Uri.parse('${RootUrlProvider.baseURL}/accounts/mypage/'),
+            headers: header);
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          print('$userData');
+          setState(() {
+            username = userData['userName']; // 수정: 사용자 이름 업데이트
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // 실패 처리 로직 추가
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // 예외 처리 로직 추가
+      }
+    } else {
+      print('Token not found');
+      // 토큰 없음 처리 로직 추가
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size; //반응형으로 구현하기 위함
@@ -59,9 +109,12 @@ class _MealRecommend extends State<MealRecommend> {
                             height: 40, // 이미지 높이 조정
                           ),
                           const SizedBox(width: 8), // 이미지와 텍스트 사이 간격 조절
-                          const Text(
-                            '김박사님께               ', // 사용자 이름 출력
-                            style: TextStyle(
+                          Text(
+                            username.isNotEmpty
+                                ? '$username님께                      '
+                                : '사용자 이름 없음                ',
+                            // 사용자 이름 출력
+                            style: const TextStyle(
                               fontSize: 28.0,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
