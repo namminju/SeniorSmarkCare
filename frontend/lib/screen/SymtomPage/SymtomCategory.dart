@@ -1,34 +1,144 @@
 import 'package:flutter/material.dart';
-import '../../widgets/PageNavigationBigButton.dart';
-import './SymtomHistory.dart';
-import 'package:frontend/widget/AppBar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/widgets/PageNavigationBigButton.dart';
+import 'package:frontend/Api/RootUrlProvider.dart';
+import 'package:intl/intl.dart';
 
-class SymtomCategory extends StatefulWidget {
-  final VoidCallback? onSubmit;
+final List<String> categories = ['', '머리', '상체', '하체', '손/발'];
+List<bool> update = [];
+DateTime now = DateTime.now();
+String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
-  SymtomCategory({Key? key, this.onSubmit}) : super(key: key);
+class DynamicPage extends StatefulWidget {
+  final String category;
+  final String paramName;
+
+  DynamicPage({required this.category, required this.paramName});
 
   @override
-  _SymtomCategoryState createState() => _SymtomCategoryState();
+  _DynamicPageState createState() => _DynamicPageState();
 }
 
-class _SymtomCategoryState extends State<SymtomCategory> {
-  int currentPageIndex = 0;
+class _DynamicPageState extends State<DynamicPage> {
+  @override
+  void initState() {
+    super.initState();
+    _getSymptoms();
+  }
 
-  final List<Widget> pages = [
-    FirstPage(),
-    SecondPage(),
-    ThirdPage(),
-    FourthPage(),
-    FivethPage(),
-    // Add more pages here if needed
-  ];
+  List<dynamic> symptoms = [];
+  List<bool> checkedList = [];
+  Future<void> _getSymptoms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/symptom/${widget.paramName}'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var utf8Data = utf8.decode(response.bodyBytes);
+          setState(() {
+            symptoms = json.decode(utf8Data);
+            _loadCheckedList(prefs); // SharedPreferences에서 체크 여부 불러오기
+          });
+        } else {
+          print('Failed to load symptoms: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error loading symptoms: $e');
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  void _loadCheckedList(SharedPreferences prefs) {
+    for (var symptom in symptoms) {
+      bool isChecked = prefs.getBool('${symptom['id']}') ?? false;
+      checkedList.add(isChecked);
+    }
+  }
+
+  void _saveCheckedState(int index, bool isChecked) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('${symptoms[index]['id']}', isChecked);
+  }
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size; // 반응형으로 구현하기 위함
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.category,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          for (int i = 0; i < symptoms.length; i++)
+            Column(
+              children: [
+                SizedBox(height: 1),
+                CheckboxListTile(
+                  title: Text(symptoms[i]['display_name'] ?? 'No name'),
+                  value: checkedList[i],
+                  activeColor: Color(0xFFFEB2B2),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      checkedList[i] = value ?? false;
+                      _saveCheckedState(i, checkedList[i]);
+                    });
+                  },
+                ),
+                SizedBox(height: 1),
+              ],
+            ),
+          SizedBox(height: 15),
+        ],
+      ),
+    );
+  }
+}
+
+class SymptomCategory extends StatefulWidget {
+  final VoidCallback? onSubmit;
+
+  SymptomCategory({Key? key, this.onSubmit}) : super(key: key);
+
+  @override
+  _SymptomCategoryState createState() => _SymptomCategoryState();
+}
+
+class _SymptomCategoryState extends State<SymptomCategory> {
+  int currentPageIndex = 0;
+
+  final List<String> paramNames = [
+    '',
+    'head',
+    'upper_body',
+    'lower_body',
+    'hand_foot'
+  ];
+  final List<int> paramNumber = [0, 1, 8, 16, 23];
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
-    double height = screenSize.height; // 상대 수치를 이용하기 위함
 
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
@@ -37,18 +147,21 @@ class _SymtomCategoryState extends State<SymtomCategory> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          pages[currentPageIndex],
-          SizedBox(height: 20),
+          if (currentPageIndex > 0)
+            DynamicPage(
+              category: categories[currentPageIndex],
+              paramName: paramNames[currentPageIndex],
+            ),
           if (currentPageIndex == 0)
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                for (int i = 1; i < pages.length; i++)
+                for (int i = 1; i < categories.length; i++)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFF0F0F0), // 버튼의 배경색을 투명으로 설정
+                        backgroundColor: Color(0xFFF0F0F0),
                         side: BorderSide(width: 2, color: Colors.black),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -73,8 +186,9 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                                   decoration: BoxDecoration(
                                     color: Color(0xFFFEB2B2),
                                     border: Border.all(
-                                        color: Colors.black,
-                                        width: width * 0.01),
+                                      color: Colors.black,
+                                      width: width * 0.01,
+                                    ),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Center(
@@ -85,10 +199,9 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                                   ),
                                 ),
                               ),
-
-                              SizedBox(width: 5), // 간격 조절
+                              SizedBox(width: 8),
                               Text(
-                                getButtonText(i),
+                                categories[i],
                                 style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.black,
@@ -109,9 +222,12 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                       ),
                     ),
                   ),
+                Padding(
+                  padding: EdgeInsets.all(12),
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2), // 버튼의 배경색을 빨간색으로 지정
+                    backgroundColor: Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -119,77 +235,17 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                     minimumSize: Size(280, 40),
                     maximumSize: Size(300, 45),
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                          content: Container(
-                            width: 288, // 원하는 너비 설정
-                            height: 256, // 원하는 높이 설정
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '알림',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // 취소 버튼을 누르면 다이얼로그만 종료
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('X'),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(4),
-                                ),
-                                Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.all(24),
-                                ),
-                                Text(
-                                  '제출이 완료되었습니다.',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(24),
-                                ),
-                                // PageNavigationBigButton 위젯 생성하면서 텍스트와 nextPage 설정
-                                PageNavigationBigButton(
-                                  buttonText: '확인하러 가기',
-                                  nextPage:
-                                      SymtomHistory(), // MedicalHistory 페이지로 이동
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
+                  onPressed: () async {
+                    update.clear();
+                    List<Future<void>> futures = [];
+
+                    for (int i = 1; i < paramNames.length; i++) {
+                      futures.add(sendSymptoms(context, paramNames[i], i));
+                    }
+
+                    await Future.wait(futures);
+
+                    _showSubmissionDialog(context);
                   },
                   child: Text(
                     '제출',
@@ -201,13 +257,13 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                   ),
                 ),
               ],
-            )
-          else
+            ),
+          if (currentPageIndex > 0)
             Row(
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2), // 버튼의 배경색을 빨간색으로 지정
+                    backgroundColor: Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -234,7 +290,7 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFEB2B2), // 버튼의 배경색을 빨간색으로 지정
+                    backgroundColor: Color(0xFFFEB2B2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -242,77 +298,18 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                     minimumSize: Size(110, 40),
                     maximumSize: Size(130, 45),
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                          content: Container(
-                            width: 288, // 원하는 너비 설정
-                            height: 256, // 원하는 높이 설정
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '알림',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // 취소 버튼을 누르면 다이얼로그만 종료
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('X'),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(4),
-                                ),
-                                Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.all(24),
-                                ),
-                                Text(
-                                  '제출이 완료되었습니다.',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(24),
-                                ),
-                                // PageNavigationBigButton 위젯 생성하면서 텍스트와 nextPage 설정
-                                PageNavigationBigButton(
-                                  buttonText: '확인하러 가기',
-                                  nextPage:
-                                      SymtomHistory(), // MedicalHistory 페이지로 이동
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
+                  onPressed: () async {
+                    update.clear();
+                    List<Future<void>> futures = [];
+
+                    for (int i = 1; i < paramNames.length; i++) {
+                      futures.add(sendSymptoms(context, paramNames[i], i));
+                    }
+
+                    await Future.wait(futures);
+
+                    print(update);
+                    _showSubmissionDialog(context);
                   },
                   child: Text(
                     '제출',
@@ -324,27 +321,183 @@ class _SymtomCategoryState extends State<SymtomCategory> {
                   ),
                 ),
               ],
-            )
+            ),
         ],
       ),
     );
   }
+}
 
-  // 버튼의 텍스트를 반환하는 함수
-  String getButtonText(int index) {
-    switch (index) {
-      case 1:
-        return '머리';
-      case 2:
-        return '상체';
-      case 3:
-        return '하체';
-      case 4:
-        return '손/발';
-      default:
-        return '';
+final List<int> paramNum = [0, 1, 8, 16, 23, 31];
+Future<void> sendSymptoms(BuildContext context, String paramName, int i) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('token');
+
+  if (token != null && token.isNotEmpty) {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      "accept": "*/*",
+      "Authorization": "Token $token"
+    };
+
+    var selectedSymptoms = [];
+    for (int j = paramNum[i]; j < paramNum[i + 1]; j++) {
+      bool isChecked = prefs.getBool(j.toString()) ?? false;
+      if (isChecked) {
+        selectedSymptoms.add((j).toString());
+      }
     }
+
+    // 모든 상태 정보 포함하여 body 구성
+    var body = json.encode({
+      "symptom_date": formattedDate,
+      "${paramName.toLowerCase()}_symptoms": selectedSymptoms,
+    });
+
+    try {
+      var response = await http.post(
+        Uri.parse('${RootUrlProvider.baseURL}/symptom/create/$paramName'),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        update.add(true);
+        print(i);
+        print('update');
+        print(update);
+        //_showSubmissionDialog(context);
+      } else {
+        print('Submission failed: ${response.statusCode}');
+        update.add(false);
+        print('update');
+        print(update);
+        //_showErrorDialog(context);
+      }
+      print(body);
+    } catch (e) {
+      print('Error submitting symptoms: $e');
+    }
+  } else {
+    print('Token not found');
   }
+}
+
+void _showSubmissionDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // Determine whether submission was successful or not based on `update` array
+      bool isSuccess = update.contains(true);
+
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        content: Container(
+          width: 288,
+          height: 256,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(' '),
+                  Text(' '),
+                  Text(
+                    isSuccess ? '알림' : '오류', // Show '알림' only if not successful
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4),
+              ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(24),
+              ),
+              if (isSuccess) // Show categories only if successful
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    for (int i = 0; i < 3; i++)
+                      if (update[i])
+                        Text(
+                          categories[i + 1] + ',',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    if (update[3])
+                      Text(
+                        categories[4],
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
+                ),
+              Text(
+                isSuccess ? '제출이 완료되었습니다.' : '제출에 실패했습니다.\n다시 시도해주세요.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+              ),
+              if (isSuccess) // Show button only if successful
+                PageNavigationBigButton(
+                  buttonText: '확인하러 가기',
+                  nextPage: SymptomHistory(),
+                ),
+              if (!isSuccess) // Show button only if not successful
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFFEB2B2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 4, // 그림자 높이 조정
+                    minimumSize: Size(240, 44), // 최소 크기 설정
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Flutter Demo',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: SymptomCategory(),
+  ));
 }
 
 String getButtonImage(int index) {
@@ -359,167 +512,5 @@ String getButtonImage(int index) {
       return 'images/symtomImg/handfoot.png';
     default:
       return '';
-  }
-}
-
-class FirstPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [],
-    );
-  }
-}
-
-class SecondPage extends StatefulWidget {
-  @override
-  _SecondPageState createState() => _SecondPageState();
-}
-
-class _SecondPageState extends State<SecondPage> {
-  bool isChecked1 = false;
-  bool isChecked2 = false;
-  bool isChecked3 = false;
-  bool isChecked4 = false;
-  bool isChecked5 = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '머리',
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 30),
-        ),
-        CheckboxListTile(
-          title: Text('통증 1'),
-          value: isChecked1,
-          activeColor: Color(0xFFFEB2B2),
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked1 = value ?? false;
-            });
-          },
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 5),
-        ),
-        CheckboxListTile(
-          title: Text('통증 2'),
-          value: isChecked2,
-          activeColor: Color(0xFFFEB2B2), // 체크된 상태의 색상을 초록색으로 변경
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked2 = value ?? false;
-            });
-          },
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 5),
-        ),
-        CheckboxListTile(
-          title: Text('통증 3'),
-          value: isChecked3,
-          activeColor: Color(0xFFFEB2B2), // 체크된 상태의 색상을 빨간색으로 변경
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked3 = value ?? false;
-            });
-          },
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 5),
-        ),
-        CheckboxListTile(
-          title: Text('통증 4'),
-          value: isChecked4,
-          activeColor: Color(0xFFFEB2B2), // 체크된 상태의 색상을 주황색으로 변경
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked4 = value ?? false;
-            });
-          },
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 5),
-        ),
-        CheckboxListTile(
-          title: Text('통증 5'),
-          value: isChecked5,
-          activeColor: Color(0xFFFEB2B2), // 체크된 상태의 색상을 보라색으로 변경
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked5 = value ?? false;
-            });
-          },
-        ),
-        // Add more CheckboxListTile widgets here if needed
-      ],
-    );
-  }
-}
-
-class ThirdPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '상체',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text('세 번째 페이지 내용'),
-      ],
-    );
-  }
-}
-
-class FourthPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '하체',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text('4 번째 페이지 내용'),
-      ],
-    );
-  }
-}
-
-class FivethPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '손/발',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text('5 번째 페이지 내용'),
-      ],
-    );
   }
 }

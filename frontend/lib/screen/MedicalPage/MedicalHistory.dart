@@ -3,13 +3,38 @@ import 'package:flutter/material.dart';
 import './TelemedAppointment.dart';
 import './MedicalHistoryAdd.dart';
 import 'package:frontend/widget/AppBar.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicalHistory extends StatefulWidget {
   @override
   _MedicalHistoryState createState() => _MedicalHistoryState();
 }
 
+void customLaunchUrl(url) async {
+  if (await canLaunchUrl(url)) {
+    launchUrl(url);
+  } else {
+    print('error');
+  }
+}
+
 class _MedicalHistoryState extends State<MedicalHistory> {
+  String username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  void _loadUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,11 +95,9 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                         ),
                         onPressed: () {
                           // 버튼이 클릭되었을 때 실행되는 동작
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TelemedAppointment()),
-                          );
+                          Uri messageLaunchUri =
+                              Uri(scheme: 'tel', path: '0200000000');
+                          customLaunchUrl(messageLaunchUri);
                         },
                         child: Container(
                           width: 320,
@@ -112,7 +135,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '000님의 이전 진료 예약 내역',
+                              '$username님의 이전 진료 예약 내역',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

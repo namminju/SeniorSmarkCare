@@ -13,8 +13,8 @@ import 'package:frontend/screen/LoginPage/Login.dart';
 import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -67,6 +67,7 @@ class _MainScreenState extends State<MainScreen> {
       print('Token not found');
       // 토큰 없음 처리 로직 추가
     }
+    await prefs.setString('username', username);
   }
 
   @override
@@ -145,7 +146,7 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SymtomHistory()),
+                      MaterialPageRoute(builder: (context) => SymptomHistory()),
                     );
                   },
                   child: Column(
