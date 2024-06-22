@@ -27,34 +27,34 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NoticeDialog(
+        return const NoticeDialog(
           text: '앓고 있는 지병 변경이\n     완료되었습니다.', // 매개변수로 텍스트 전달
         );
       },
     );
   }
 
-  void _showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return NoticeDialog(
-          text: '앓고 있는 지병 변경이 실패하였습니다. 다시 시도해주세요.', // 매개변수로 텍스트 전달
-        );
-      },
-    );
-  }
+  // void _showErrorDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return NoticeDialog(
+  //         text: '앓고 있는 지병 변경이 실패하였습니다. 다시 시도해주세요.', // 매개변수로 텍스트 전달
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     double width = screenSize.width;
-    double height = screenSize.height;
+    //double height = screenSize.height;
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(), // 수정된 AppBar 사용 방법
+        appBar: const CustomAppBar(), // 수정된 AppBar 사용 방법
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -63,13 +63,13 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                 Padding(
                   padding: EdgeInsets.all(width * 0.03),
                 ),
-                Text(
+                const Text(
                   '마이페이지',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
                 ),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
-                  child: Text(
+                  child: const Text(
                     '[앓고 있는 지병]',
                     style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
@@ -86,8 +86,8 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '과거병력',
                             style: TextStyle(
@@ -96,7 +96,7 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.black,
                         ),
                         Padding(
@@ -115,12 +115,12 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked1 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width: 8), // 체크박스와 텍스트 사이의 간격 조정
-                                        Text(
+                                        const Text(
                                           '고혈압',
                                           style: TextStyle(
                                               fontSize: 24), // 텍스트 스타일 조정 가능
@@ -138,11 +138,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked2 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '심장질환',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -163,11 +163,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked3 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '당뇨',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -184,11 +184,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked4 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '알레르기',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -209,11 +209,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked5 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '결핵',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -230,11 +230,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked6 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '수술력',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -255,18 +255,18 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               lastChecked7 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '간염',
                                           style: TextStyle(fontSize: 24),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Expanded(
+                                  const Expanded(
                                     child: Row(),
                                   ),
                                 ],
@@ -274,9 +274,9 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                             ],
                           ),
                         ),
-                        Padding(padding: const EdgeInsets.only(top: 30)),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        const Padding(padding: EdgeInsets.only(top: 30)),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text(
                             '현재 앓고 있는 지병',
                             style: TextStyle(
@@ -285,7 +285,7 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                             ),
                           ),
                         ),
-                        Divider(
+                        const Divider(
                           color: Colors.black,
                         ),
                         Padding(
@@ -304,12 +304,12 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked1 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                             width: 8), // 체크박스와 텍스트 사이의 간격 조정
-                                        Text(
+                                        const Text(
                                           '고혈압',
                                           style: TextStyle(
                                               fontSize: 24), // 텍스트 스타일 조정 가능
@@ -330,8 +330,8 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                           activeColor:
                                               Color(0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '심장질환',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -352,11 +352,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked3 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '당뇨',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -373,11 +373,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked4 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '알레르기',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -398,11 +398,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked5 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '결핵',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -419,11 +419,11 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked6 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '수술력',
                                           style: TextStyle(fontSize: 24),
                                         ),
@@ -444,39 +444,39 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                                               nowChecked7 = value ?? false;
                                             });
                                           },
-                                          activeColor:
-                                              Color(0xFFFEB2B2), // 체크 시 분홍색 지정
+                                          activeColor: const Color(
+                                              0xFFFEB2B2), // 체크 시 분홍색 지정
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
+                                        const SizedBox(width: 8),
+                                        const Text(
                                           '간염',
                                           style: TextStyle(fontSize: 24),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Expanded(
+                                  const Expanded(
                                     child: Row(),
                                   ),
                                 ],
                               ),
-                              Row(),
+                              const Row(),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 40.0),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFFEB2B2),
+                            backgroundColor: const Color(0xFFFEB2B2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                             elevation: 4,
                           ),
                           onPressed: _showConfirmationDialog,
-                          child: Container(
+                          child: const SizedBox(
                             width: 320,
                             height: 40,
                             child: Center(
@@ -491,8 +491,8 @@ class _ChangeChronicIllState extends State<ChangeChronicIll> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 130.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 130.0),
                         ),
                       ],
                     ),

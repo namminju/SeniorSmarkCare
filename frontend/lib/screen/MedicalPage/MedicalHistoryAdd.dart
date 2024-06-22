@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart';
 
@@ -11,7 +10,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: const CustomAppBar(),
       body: Center(
         child: SingleChildScrollView(
@@ -19,10 +18,10 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
+              const Padding(
+                padding: EdgeInsets.only(top: 20),
               ),
-              Text(
+              const Text(
                 '비대면 진료 내역',
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
               ),
@@ -44,11 +43,11 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
+                  child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -69,8 +68,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                         child: Column(
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.04.11. 09:56',
                                 style: TextStyle(
@@ -80,8 +78,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.04.07. 15:46',
                                 style: TextStyle(
@@ -91,8 +88,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -102,8 +98,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -113,8 +108,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -124,8 +118,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -135,8 +128,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -146,8 +138,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -157,8 +148,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -168,8 +158,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -179,8 +168,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
@@ -190,8 +178,7 @@ class _MedicalHistoryAdd extends State<MedicalHistoryAdd> {
                               ),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 '2024.03.02. 18:02',
                                 style: TextStyle(
