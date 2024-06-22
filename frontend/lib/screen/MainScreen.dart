@@ -4,6 +4,7 @@ import 'package:frontend/screen/MealPage/MealRecommend.dart';
 
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
+import 'package:frontend/screen/StartPage/SetInfo.dart';
 
 import 'package:frontend/widget/AppBar.dart';
 
@@ -139,9 +140,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-
                     minimumSize: const Size(180, 160),
-
                     backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -151,8 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const SymptomHistory()),
+                      MaterialPageRoute(builder: (context) => SymptomHistory()),
                     );
                   },
                   child: Column(
@@ -175,9 +173,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-
                     minimumSize: const Size(180, 160),
-
                     backgroundColor: const Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -289,9 +285,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-
                     minimumSize: const Size(180, 160),
-
                     backgroundColor: const Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -389,9 +383,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-
                     minimumSize: const Size(180, 160),
-
                     backgroundColor: const Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -424,9 +416,7 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             Padding(
-
               padding: EdgeInsets.all(width * 0.02),
-
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -488,32 +478,43 @@ class _MainScreenState extends State<MainScreen> {
                       )
                     ],
                   ),
-                  Column(children: [
-                    SizedBox(
-                      width: width * 0.17,
-                      height: width * 0.17,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 170, 170, 170),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'images/mainPageImg/qnaIcon.png',
-                            width: width * 0.07,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SetInfo()),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: width * 0.17,
+                          height: width * 0.17,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 170, 170, 170),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'images/mainPageImg/qnaIcon.png',
+                                width: width * 0.07,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Text(
+                          '문의하기',
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      '문의하기',
-                      style: TextStyle(
-                        fontSize: width * 0.04,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    )
-                  ])
+                  ),
                 ],
               ),
             ),

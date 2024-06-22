@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widget/AppBar.dart'; // Update to correct path
+import 'package:frontend/widgets/CloseDialog.dart';
 import 'package:frontend/widgets/NoticeDialog.dart'; // Update to correct path
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -111,19 +112,17 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
         );
       },
     );
-    print(guardPhone);
   }
 
   void _showErrorDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const NoticeDialog(
+        return const CloseDialog(
           text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
         );
       },
     );
-    print(guardPhone);
   }
 
   @override
@@ -243,54 +242,67 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                             ],
                           ),
                         ),
-                        const Padding(padding: EdgeInsets.only(top: 30)),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: TextField(
-                            controller: _newPhoneNumberController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
+                        if (_isPhoneVerified) ...[
+                          const Padding(padding: EdgeInsets.only(top: 30)),
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text(
+                              '전화번호 변경',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
-                              filled: true,
-                              fillColor: Color(0xFFF0F0F0),
-                              hintText: '새 전화번호 입력',
                             ),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            keyboardType: TextInputType.number,
                           ),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 20)),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 254, 178, 178),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          const Padding(padding: EdgeInsets.only(top: 30)),
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: TextField(
+                              controller: _newPhoneNumberController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Color(0xFFF0F0F0),
+                                hintText: '새 전화번호 입력',
+                              ),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              keyboardType: TextInputType.number,
                             ),
-                            elevation: 1,
                           ),
-                          onPressed: () {
-                            changeGuardPhoneNumber();
-                          },
-                          child: const SizedBox(
-                            width: 320,
-                            height: 52,
-                            child: Center(
-                              child: Text(
-                                '저장하기',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                          const Padding(padding: EdgeInsets.only(top: 20)),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 254, 178, 178),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 1,
+                            ),
+                            onPressed: () {
+                              changeGuardPhoneNumber();
+                            },
+                            child: const SizedBox(
+                              width: 320,
+                              height: 52,
+                              child: Center(
+                                child: Text(
+                                  '저장하기',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
