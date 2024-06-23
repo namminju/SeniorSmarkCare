@@ -140,7 +140,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(180, 160),
+                    minimumSize: const Size(160, 160),
                     backgroundColor: const Color(0xFFFFCC66),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -173,7 +173,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(180, 160),
+                    minimumSize: const Size(160, 160),
                     backgroundColor: const Color(0xFF8ED973),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -285,7 +285,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(180, 160),
+                    minimumSize: const Size(160, 160),
                     backgroundColor: const Color(0xFFFF9966),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -383,7 +383,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(180, 160),
+                    minimumSize: const Size(160, 160),
                     backgroundColor: const Color(0xFFA1DCFF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
