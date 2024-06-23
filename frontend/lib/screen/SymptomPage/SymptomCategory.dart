@@ -148,9 +148,11 @@ class _SymptomCategoryState extends State<SymptomCategory> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (currentPageIndex > 0)
-            DynamicPage(
-              category: categories[currentPageIndex],
-              paramName: paramNames[currentPageIndex],
+            Expanded(
+              child: DynamicPage(
+                category: categories[currentPageIndex],
+                paramName: paramNames[currentPageIndex],
+              ),
             ),
           if (currentPageIndex == 0)
             Column(
@@ -223,7 +225,7 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                     ),
                   ),
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.all(8),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -237,7 +239,6 @@ class _SymptomCategoryState extends State<SymptomCategory> {
                   ),
                   onPressed: () async {
                     update.clear(); // update 리스트 초기화
-
                     for (int i = 1; i < paramNames.length; i++) {
                       await sendSymptoms(context, paramNames[i],
                           i); // await을 사용하여 순차적으로 호출하고 기다림
@@ -448,7 +449,7 @@ void _showSubmissionDialog(BuildContext context) {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(20),
               ),
               if (isSuccess) // Show button only if successful
                 PageNavigationBigButton(
