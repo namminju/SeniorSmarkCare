@@ -223,7 +223,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                                           255, 254, 178, 178),
                                     ),
                                     const Text(
-                                      '변경하려는 번호가 보호자의 전화번호가 맞나요? ',
+                                      '보호자 전화번호 변경',
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
