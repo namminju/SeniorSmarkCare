@@ -1,16 +1,107 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widget/AppBar.dart'; // 예시에 맞춰 변경
-import 'package:frontend/widgets/NoticeDialog.dart'; // 예시에 맞춰 변경
+import 'package:frontend/widget/AppBar.dart'; // Update to correct path
+import 'package:frontend/widgets/CloseDialog.dart';
+import 'package:frontend/widgets/NoticeDialog.dart'; // Update to correct path
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/Api/RootUrlProvider.dart';
 
 class ChangeGuardianPhoneNum extends StatefulWidget {
+  const ChangeGuardianPhoneNum({super.key});
+
   @override
   _ChangeGuardianPhoneNumState createState() => _ChangeGuardianPhoneNumState();
 }
 
 class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
-  bool _showPasswordVerification = false;
-  bool _showPhoneVerification = false;
   bool _isPhoneVerified = false;
+  final TextEditingController _newPhoneNumberController =
+      TextEditingController();
+
+  late String guardPhone = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGuardPhone(); // Fetch initial user data on widget initialization
+  }
+
+  Future<void> fetchGuardPhone() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/addinfo/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          setState(() {
+            guardPhone = userData['guardPhone']?.toString() ?? '미정';
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
+  }
+
+  Future<void> changeGuardPhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    String newPhoneNumber = _newPhoneNumberController.text;
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token",
+        "Content-Type": "application/json"
+      };
+
+      try {
+        var response = await http.put(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/addinfo/'),
+          headers: headers,
+          body: jsonEncode({
+            'guardPhone': newPhoneNumber,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          // Successful update
+          _showConfirmationDialog();
+          fetchGuardPhone(); // Fetch updated user data after successful update
+        } else {
+          // Handle error scenario
+          _showErrorDialog();
+          print('Failed to update guardPhone: ${response.statusCode}');
+        }
+      } catch (e) {
+        // Exception occurred during API call
+        print('Error: $e');
+        _showErrorDialog();
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
+  }
 
   void _showConfirmationDialog() {
     showDialog(
@@ -23,16 +114,16 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
     );
   }
 
-  // void _showErrorDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return NoticeDialog(
-  //         text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
-  //       );
-  //     },
-  //   );
-  // }
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CloseDialog(
+          text: '전화번호 변경이 실패하였습니다. 다시 시도해주세요.',
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +133,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: const CustomAppBar(), // CustomAppBar()으로 변경
+        appBar: const CustomAppBar(), // Replace with your custom app bar widget
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -77,7 +168,7 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Text(
-                            '변경 전 전화번호',
+                            '현재 보호자 전화번호',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -87,22 +178,12 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                         const Divider(
                           color: Colors.black,
                         ),
-                        const Padding(
-                          padding: EdgeInsets.all(2.0),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
                           child: Text(
-                            '010 - 1234 - 5678',
-                            style: TextStyle(
+                            guardPhone,
+                            style: const TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            '비밀번호 인증 후 변경이 가능합니다.',
-                            style: TextStyle(
-                              fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -111,191 +192,114 @@ class _ChangeGuardianPhoneNumState extends State<ChangeGuardianPhoneNum> {
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Text(
-                            '비밀번호 본인 확인',
+                            '보호자 확인 및 전화번호 변경',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
+                        const Divider(
+                          color: Colors.black,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const TextField(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Color(0xFFF0F0F0),
-                                  hintText: '비밀번호',
-                                ),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                               Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFEB2B2),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Checkbox(
+                                      value: _isPhoneVerified,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          _isPhoneVerified = value ?? false;
+                                        });
+                                      },
+                                      activeColor: const Color.fromARGB(
+                                          255, 254, 178, 178),
                                     ),
-                                    elevation: 1,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _showPasswordVerification = true;
-                                    });
-                                  },
-                                  child: SizedBox(
-                                    width: 68,
-                                    height: 24,
-                                    child: Center(
-                                      child: Text(
-                                        _showPasswordVerification
-                                            ? '인증 완료'
-                                            : '인증하기',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
+                                    const Text(
+                                      '변경하려는 번호가 보호자의 전화번호가 맞나요? ',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        if (_showPasswordVerification) ...[
+                        if (_isPhoneVerified) ...[
                           const Padding(padding: EdgeInsets.only(top: 30)),
                           const Padding(
                             padding: EdgeInsets.all(5.0),
                             child: Text(
-                              '전화번호 인증 및 변경',
+                              '전화번호 변경',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
+                          const Padding(padding: EdgeInsets.only(top: 30)),
                           Padding(
                             padding: const EdgeInsets.all(2.0),
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                const TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    filled: true,
-                                    fillColor: Color(0xFFF0F0F0),
-                                    hintText: '전화번호',
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  keyboardType: TextInputType.number,
+                            child: TextField(
+                              controller: _newPhoneNumberController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFFEB2B2),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      elevation: 1,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _showPhoneVerification = true;
-                                      });
-                                    },
-                                    child: SizedBox(
-                                      width: 68,
-                                      height: 24,
-                                      child: Center(
-                                        child: Text(
-                                          _showPhoneVerification
-                                              ? '인증 완료'
-                                              : '인증하기',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                filled: true,
+                                fillColor: Color(0xFFF0F0F0),
+                                hintText: '새 전화번호 입력',
+                              ),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              keyboardType: TextInputType.number,
                             ),
                           ),
-                        ],
-                        if (_showPhoneVerification) ...[
-                          Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                const TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    filled: true,
-                                    fillColor: Color(0xFFF0F0F0),
-                                    hintText: '인증번호 입력',
-                                  ),
+                          const Padding(padding: EdgeInsets.only(top: 20)),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 254, 178, 178),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 1,
+                            ),
+                            onPressed: () {
+                              changeGuardPhoneNumber();
+                            },
+                            child: const SizedBox(
+                              width: 320,
+                              height: 52,
+                              child: Center(
+                                child: Text(
+                                  '저장하기',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFFEB2B2),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      elevation: 1,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isPhoneVerified = true;
-                                      });
-                                      _showConfirmationDialog();
-                                    },
-                                    child: SizedBox(
-                                      width: 68,
-                                      height: 24,
-                                      child: Center(
-                                        child: Text(
-                                          _isPhoneVerified ? '인증 완료' : '인증하기',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ],

@@ -119,7 +119,10 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: passwordController,
-                  decoration: const InputDecoration(
+
+                  obscureText: true,
+                  decoration: InputDecoration(
+
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
