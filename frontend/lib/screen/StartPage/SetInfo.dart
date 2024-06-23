@@ -56,6 +56,201 @@ class _SetInfo extends State<SetInfo> {
   late String road_address;
   late String building_number;
   late String detailed_address;
+  TextEditingController searchController = TextEditingController();
+  TextEditingController detailAddressController = TextEditingController();
+  late String userAddress = '';
+  late String userDetailAddress = '';
+  late String query = '';
+  List<Map<String, dynamic>> searchData = [];
+
+  Future<void> _sendAddress(
+      String userAddress, String userDetailAddress) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      var body = json.encode({
+        "postal_code": "",
+        "city": userAddress,
+        "district": "",
+        "neighborhood": "",
+        "road_address": "",
+        "building_number": "",
+        "detailed_address": userDetailAddress
+      });
+      print(headers);
+      print(body);
+
+      try {
+        var response = await http.post(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/address/'),
+          headers: headers,
+          body: body,
+        );
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          print('send successfully');
+          //_showConfirmationDialog();
+        } else {
+          print('Failed ${response.statusCode}');
+          //_showErrorDialog();
+        }
+      } catch (e) {
+        print('Error: $e');
+        //_showErrorDialog();
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
+  void _showAddressSearchDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                width: 288,
+                height: 256,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF0F0F0),
+                              hintText: '찾고자하는 주소',
+                            ),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFFEB2B2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            elevation: 1,
+                          ),
+                          onPressed: () async {
+                            query = searchController.text;
+                            await searchAddress();
+                            setState(() {}); // 검색 결과가 변경되었음을 알림
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 4),
+                            child: Text(
+                              '찾기',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    buildSearchDataWidget(), // 여기에 buildSearchDataWidget() 추가
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSearchDataWidget() {
+    return Container(
+      height: 180, // 세로 크기 지정
+      child: ListView.builder(
+        itemCount: searchData.length,
+        itemBuilder: (context, index) {
+          var prediction = searchData[index];
+          return ListTile(
+            title: Text(prediction['description'].replaceAll('대한민국 ', '')),
+            onTap: () {
+              // Handle tap on prediction
+              setState(() {
+                userAddress = prediction['description'].replaceAll('대한민국 ', '');
+              });
+              print(prediction['description']);
+              print(prediction['structured_formatting']['secondary_text']);
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> searchAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse(
+              '${RootUrlProvider.baseURL}/accounts/address/search/?query=$query'),
+          headers: headers,
+        );
+        var utf8Data = utf8.decode(response.bodyBytes);
+
+        if (response.statusCode == 200) {
+          var data = json.decode(utf8Data);
+          if (data.isNotEmpty) {
+            setState(() {
+              // Clear existing searchData before adding new data
+              searchData.clear();
+              // Add each prediction to searchData list
+              for (var prediction in data["predictions"]) {
+                searchData.add(prediction);
+              }
+            });
+            print(searchData);
+          }
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
+  }
 
   Future<void> fetchAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -514,22 +709,86 @@ class _SetInfo extends State<SetInfo> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      '거주지',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Padding(padding: const EdgeInsets.only(top: 30)),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        '변경하고자 하는 거주지',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    TextFormField(
-                      //controller: _addressController,
-                      decoration: _buildInputDecoration(''),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your address';
-                        }
-                        return null;
-                      },
+                    Divider(
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceBetween, // 간격을 좁히기 위해 MainAxisAlignment.start 사용
+                        children: [
+                          Flexible(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                userAddress.isEmpty
+                                    ? ' 내 주소 찾아보기'
+                                    : userAddress,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8), // 간격 추가
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFFEB2B2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              elevation: 1,
+                            ),
+                            onPressed: _showAddressSearchDialog,
+                            child: Container(
+                              width: 68,
+                              height: 24,
+                              child: Center(
+                                child: Text(
+                                  '찾기',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: TextField(
+                        controller: detailAddressController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Color(0xFFF0F0F0),
+                          hintText: '상세 주소 입력',
+                        ),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -670,7 +929,9 @@ class _SetInfo extends State<SetInfo> {
                   ),
                   elevation: 1,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _sendAddress(userAddress, detailAddressController.text);
+                },
                 child: const SizedBox(
                   width: 320,
                   height: 52,

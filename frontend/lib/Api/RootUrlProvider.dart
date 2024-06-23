@@ -5,7 +5,7 @@ class RootUrlProvider {
     if (kIsWeb) {
       return 'http://127.0.0.1:8000';
     } else {
-      return 'http://172.30.1.43:8000';
+      return 'http://192.168.0.6:8000';
     }
   }
 }
