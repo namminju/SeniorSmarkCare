@@ -34,7 +34,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
       final response = await http.get(
         // GET 요청으로 변경
         Uri.parse(apiUrl),
@@ -68,7 +68,7 @@ class _MealTimeState extends State<MealTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/alarm-cnt/';
       final response = await http.put(
         Uri.parse(apiUrl),
         headers: {

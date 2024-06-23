@@ -33,7 +33,7 @@ class _ExerciseTime extends State<ExerciseTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/exercise/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/exercise/alarm-cnt/';
       final response = await http.get(
         // GET 요청으로 변경
         Uri.parse(apiUrl),
@@ -67,7 +67,7 @@ class _ExerciseTime extends State<ExerciseTime> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      const apiUrl = '${RootUrlProvider.baseURL}/exercise/alarm-cnt/';
+      final String apiUrl = '${RootUrlProvider.baseURL}/exercise/alarm-cnt/';
       final response = await http.put(
         Uri.parse(apiUrl),
         headers: {
