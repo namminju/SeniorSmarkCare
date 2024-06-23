@@ -14,20 +14,69 @@ class ChangeAddress extends StatefulWidget {
 
 class _ChangeAddress extends State<ChangeAddress> {
   TextEditingController searchController = TextEditingController();
+  TextEditingController detailAddressController = TextEditingController();
+  late String originUserAddress = '';
   late String userAddress = '';
   late String userDetailAddress = '';
   late String query = '';
-  Map<String, dynamic> searData = {"predictions": [], "status": "OK"};
+  List<Map<String, dynamic>> searchData = [];
   @override
   void initState() {
     super.initState();
     fetchUserAddress();
   }
 
+  Future<void> _sendAddress(
+      String userAddress, String userDetailAddress) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      var body = json.encode({
+        "postal_code": "",
+        "city": userAddress,
+        "district": "",
+        "neighborhood": "",
+        "road_address": "",
+        "building_number": "",
+        "detailed_address": userDetailAddress
+      });
+      print(headers);
+      print(body);
+
+      try {
+        var response = await http.put(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/address/my'),
+          headers: headers,
+          body: body,
+        );
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          print('send successfully');
+          _showConfirmationDialog();
+        } else {
+          print('Failed ${response.statusCode}');
+          _showErrorDialog();
+        }
+      } catch (e) {
+        print('Error: $e');
+        _showErrorDialog();
+      }
+    } else {
+      print('Token not found');
+    }
+  }
+
   Future<void> fetchUserAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
+    print(query);
     if (token != null && token.isNotEmpty) {
       Map<String, String> headers = {
         "accept": "*/*",
@@ -44,15 +93,16 @@ class _ChangeAddress extends State<ChangeAddress> {
         if (response.statusCode == 200) {
           var userData = json.decode(utf8Data);
           setState(() {
-            userAddress = userData['city']?.toString() ?? '';
-            userAddress += ' ';
-            userAddress += userData['district']?.toString() ?? '';
-            userAddress += ' ';
-            userAddress += userData['neighborhood']?.toString() ?? '';
-            userAddress += ' ';
-            userAddress += userData['road_address']?.toString() ?? '';
-            userAddress += ' ';
-            userAddress += userData['building_number']?.toString() ?? '';
+            originUserAddress = userData['city']?.toString() ?? '';
+            /*originUserAddress += ' ';
+            originUserAddress += userData['district']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['neighborhood']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['road_address']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['building_number']?.toString() ?? '';
+            */
             userDetailAddress = userData['detailed_address']?.toString() ?? '';
           });
         } else {
@@ -67,6 +117,104 @@ class _ChangeAddress extends State<ChangeAddress> {
       print('Token not found');
       // Handle case where token is not available
     }
+  }
+
+  void _showAddressSearchDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                width: 288,
+                height: 256,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF0F0F0),
+                              hintText: '찾고자하는 주소',
+                            ),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFFEB2B2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            elevation: 1,
+                          ),
+                          onPressed: () async {
+                            query = searchController.text;
+                            await searchAddress();
+                            setState(() {}); // 검색 결과가 변경되었음을 알림
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 4),
+                            child: Text(
+                              '찾기',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    buildSearchDataWidget(), // 여기에 buildSearchDataWidget() 추가
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSearchDataWidget() {
+    return Container(
+      height: 180, // 세로 크기 지정
+      child: ListView.builder(
+        itemCount: searchData.length,
+        itemBuilder: (context, index) {
+          var prediction = searchData[index];
+          return ListTile(
+            title: Text(prediction['description'].replaceAll('대한민국 ', '')),
+            onTap: () {
+              // Handle tap on prediction
+              setState(() {
+                userAddress = prediction['description'].replaceAll('대한민국 ', '');
+              });
+              print(prediction['description']);
+              print(prediction['structured_formatting']['secondary_text']);
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          );
+        },
+      ),
+    );
   }
 
   Future<void> searchAddress() async {
@@ -88,8 +236,18 @@ class _ChangeAddress extends State<ChangeAddress> {
         var utf8Data = utf8.decode(response.bodyBytes);
 
         if (response.statusCode == 200) {
-          var userData = json.decode(utf8Data);
-          setState(() {});
+          var data = json.decode(utf8Data);
+          if (data.isNotEmpty) {
+            setState(() {
+              // Clear existing searchData before adding new data
+              searchData.clear();
+              // Add each prediction to searchData list
+              for (var prediction in data["predictions"]) {
+                searchData.add(prediction);
+              }
+            });
+            print(searchData);
+          }
         } else {
           print('Failed to load user data: ${response.statusCode}');
           // Handle failure
@@ -121,52 +279,6 @@ class _ChangeAddress extends State<ChangeAddress> {
       builder: (BuildContext context) {
         return NoticeDialog(
           text: '거주지 변경이 실패하였습니다. 다시 시도해주세요.', // 매개변수로 텍스트 전달
-        );
-      },
-    );
-  }
-
-  void _showAddressSearchDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: Container(
-            width: 288,
-            height: 256,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /*TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // 팝업 닫기
-                      },
-                      child: Text('X'),
-                    ),*/
-                  ],
-                ),
-                TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Color(0xFFF0F0F0),
-                    hintText: '찾고자하는 주소',
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -229,7 +341,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                         Padding(
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
-                            '$userAddress \n$userDetailAddress',
+                            '$originUserAddress \n$userDetailAddress',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -253,15 +365,25 @@ class _ChangeAddress extends State<ChangeAddress> {
                         Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceBetween, // 간격을 좁히기 위해 MainAxisAlignment.start 사용
                             children: [
-                              Text(
-                                '도로명 주소 입력',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    userAddress.isEmpty
+                                        ? ' 내 주소 찾아보기'
+                                        : userAddress,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.clip,
+                                  ),
                                 ),
                               ),
+                              SizedBox(width: 8), // 간격 추가
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFFFEB2B2),
@@ -270,8 +392,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                                   ),
                                   elevation: 1,
                                 ),
-                                onPressed:
-                                    _showAddressSearchDialog, // 찾기 버튼 클릭 시 팝업 띄우기
+                                onPressed: _showAddressSearchDialog,
                                 child: Container(
                                   width: 68,
                                   height: 24,
@@ -279,7 +400,7 @@ class _ChangeAddress extends State<ChangeAddress> {
                                     child: Text(
                                       '찾기',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
@@ -291,11 +412,19 @@ class _ChangeAddress extends State<ChangeAddress> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            '상세주소 입력',
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: TextField(
+                            controller: detailAddressController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Color(0xFFF0F0F0),
+                              hintText: '상세 주소 입력',
+                            ),
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -311,8 +440,12 @@ class _ChangeAddress extends State<ChangeAddress> {
                             ),
                             elevation: 4,
                           ),
-                          onPressed:
-                              _showConfirmationDialog, // 저장하기 버튼 클릭 시 팝업 띄우기
+                          onPressed: () {
+                            setState(() {
+                              userDetailAddress = detailAddressController.text;
+                            });
+                            _sendAddress(userAddress, userDetailAddress);
+                          },
                           child: Container(
                             width: 320,
                             height: 40,
