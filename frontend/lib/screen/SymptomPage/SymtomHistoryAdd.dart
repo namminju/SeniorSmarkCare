@@ -10,6 +10,8 @@ import 'package:logging/logging.dart';
 final Logger _logger = Logger('Symtom');
 
 class SymtomHistoryAdd extends StatefulWidget {
+  const SymtomHistoryAdd({super.key});
+
   @override
   _SymtomHistoryAdd createState() => _SymtomHistoryAdd();
 }
@@ -44,7 +46,7 @@ class _SymtomHistoryAdd extends State<SymtomHistoryAdd> {
 
       try {
         var response = await http.get(
-          Uri.parse('${RootUrlProvider.baseURL}/symptom/list/'),
+          Uri.parse('${RootUrlProvider.baseURL}/symptom/list/today'),
           headers: headers,
         );
 

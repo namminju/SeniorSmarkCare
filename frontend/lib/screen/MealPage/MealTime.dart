@@ -27,6 +27,7 @@ class _MealTimeState extends State<MealTime> {
   void initState() {
     super.initState();
     _fetchMealAlarmCount(); // 초기 알람 횟수를 백엔드에서 가져오는 함수 호출
+    _fetchMealTimes(); // 초기 운동 시간을 백엔드에서 가져오는 함수 호출
   }
 
 // 백엔드에서 알람 횟수 가져오기
@@ -47,19 +48,90 @@ class _MealTimeState extends State<MealTime> {
         setState(() {
           mealAlarmCount = mealAlarmCnt;
           _selectedCount = mealAlarmCnt;
-          _selectedTimes = List.generate(_selectedCount, (_) => null);
+          _selectedTimes = List.generate(
+              _selectedCount, (_) => const TimeOfDay(hour: 0, minute: 0));
         });
       } else {
         throw Exception('Failed to load meal alarm count');
       }
     } catch (e) {
-      _logger.severe('Error fetching meal alarm count: $e');
+      print('Error fetching meal alarm count: $e');
+
       // 오류 발생 시 기본값으로 초기화
       setState(() {
         mealAlarmCount = 1;
         _selectedCount = 1;
-        _selectedTimes = List.generate(_selectedCount, (_) => null);
+        _selectedTimes = List.generate(
+            _selectedCount, (_) => const TimeOfDay(hour: 0, minute: 0));
       });
+    }
+  }
+
+  // 백엔드에서 운동 시간 가져오기
+  void _fetchMealTimes() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {'Authorization': 'Token $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final times = (jsonData['mealTime'] ?? []) as List<dynamic>;
+        setState(() {
+          _selectedTimes = times
+              .map((time) => time != null
+                  ? TimeOfDay(
+                      hour: int.parse(time.split(':')[0]),
+                      minute: int.parse(time.split(':')[1]),
+                    )
+                  : const TimeOfDay(hour: 0, minute: 0))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load meal times');
+      }
+    } catch (e) {
+      print('Error fetching meal times: $e');
+    }
+  }
+
+  // 운동 시간을 백엔드에 저장
+  _saveMealTimes() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      final String apiUrl = '${RootUrlProvider.baseURL}/meal/time/';
+
+      // Create a map of meal times with 1,2,...,5
+      Map<String, String?> mealTimesMap = {};
+      for (int i = 0; i < _selectedTimes.length; i++) {
+        mealTimesMap['mealTime${i + 1}'] = _selectedTimes[i] != null
+            ? _formatTimeForApi(_selectedTimes[i]!)
+            : null;
+      }
+
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Token $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(mealTimesMap),
+      );
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        print('Meal times saved successfully');
+      } else {
+        throw Exception('Failed to save meal times');
+      }
+    } catch (e) {
+      print('Error saving meal times: $e');
     }
   }
 
@@ -182,7 +254,7 @@ class _MealTimeState extends State<MealTime> {
                                 _selectedCount = newValue!;
                                 _selectedTimes = List.generate(
                                   _selectedCount,
-                                  (_) => null, // 선택된 시간 초기화
+                                  (_) => null,
                                 );
                               });
                             },
@@ -391,8 +463,10 @@ class _MealTimeState extends State<MealTime> {
                 return;
               }
               try {
-                // 모든 시간이 입력되었을 때 선택된 횟수를 저장하고 앱 상태를 업데이트합니다.
+                // 모든 시간이 입력되었을 때 선택된 횟수를 저장하고 앱 상태를 업데이트
                 await _saveMealAlarmCount(_selectedCount);
+
+                await _saveMealTimes();
 
                 // 저장 완료 시 사용자에게 메시지 표시
                 showDialog(
@@ -542,7 +616,6 @@ class _MealTimeState extends State<MealTime> {
               textTheme: ButtonTextTheme.primary, // 버튼 텍스트 테마 설정
             ),
             timePickerTheme: TimePickerThemeData(
-              // 이 부분에서 entertime 스타일 설정
               hourMinuteShape: const CircleBorder(), // 시간 선택 버튼 모양
               dayPeriodShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0)), // AM/PM 버튼 모양
@@ -567,7 +640,10 @@ class _MealTimeState extends State<MealTime> {
     return '$hour:$minute';
   }
 
-  // String _formatTimeForApi(TimeOfDay time) {
-  //   return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
-  // }
+  String _formatTimeForApi(TimeOfDay time) {
+    final String hour = time.hour.toString().padLeft(2, '0');
+    final String minute = time.minute.toString().padLeft(2, '0');
+    final String formattedTime = '$hour:$minute:00';
+    return formattedTime;
+  }
 }

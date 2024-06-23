@@ -4,13 +4,15 @@ import 'package:frontend/screen/MealPage/MealRecommend.dart';
 
 import 'package:frontend/screen/ExercisePage/ExercisePage.dart';
 import 'package:frontend/screen/ExercisePage/ExerciseTime.dart';
+import 'package:frontend/screen/StartPage/SetInfo.dart';
 
 import 'package:frontend/widget/AppBar.dart';
 
 import 'package:frontend/screen/MedicalPage/MedicalHistory.dart';
 import 'package:frontend/screen/MyPage/Mypage.dart';
 import 'package:frontend/screen/LoginPage/Login.dart';
-import 'package:frontend/screen/SymtomPage/SymtomHistory.dart';
+import 'package:frontend/screen/SymptomPage/SymptomHistory.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Api/RootUrlProvider.dart';
 import 'dart:convert';
@@ -131,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(width * 0.03),
+              padding: EdgeInsets.all(width * 0.02),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -391,7 +393,8 @@ class _MainScreenState extends State<MainScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MedicalHistory()),
+                      MaterialPageRoute(
+                          builder: (context) => const MedicalHistory()),
                     );
                   },
                   child: Column(children: [
@@ -413,7 +416,7 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(width * 0.04),
+              padding: EdgeInsets.all(width * 0.02),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -475,32 +478,43 @@ class _MainScreenState extends State<MainScreen> {
                       )
                     ],
                   ),
-                  Column(children: [
-                    SizedBox(
-                      width: width * 0.17,
-                      height: width * 0.17,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 170, 170, 170),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'images/mainPageImg/qnaIcon.png',
-                            width: width * 0.07,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SetInfo()),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: width * 0.17,
+                          height: width * 0.17,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 170, 170, 170),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'images/mainPageImg/qnaIcon.png',
+                                width: width * 0.07,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Text(
+                          '문의하기',
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      '문의하기',
-                      style: TextStyle(
-                        fontSize: width * 0.04,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    )
-                  ])
+                  ),
                 ],
               ),
             ),

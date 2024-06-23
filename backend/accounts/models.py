@@ -81,12 +81,12 @@ class UserExtra(models.Model):
         max_length=11,
         null=True,
         blank=True,
-        validators=[RegexValidator(regex=r'^01[0-9]{8,9}$', message='Enter a valid call number')]
+        validators=[RegexValidator(regex=r'^0[0-9]{8,10}$', message='Enter a valid call number')]
     )
 
 class UserAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    postal_code = models.CharField(max_length=10, verbose_name="우편번호")
+    postal_code = models.CharField(max_length=10, verbose_name="우편번호", blank=True, null=True)
     city = models.CharField(max_length=100, verbose_name="시/도", blank=True, null=True)
     district = models.CharField(max_length=100, verbose_name="시/군/구", blank=True, null=True)
     neighborhood = models.CharField(max_length=100, verbose_name="동/읍/면", blank=True, null=True)

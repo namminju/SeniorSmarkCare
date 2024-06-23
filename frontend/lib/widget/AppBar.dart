@@ -1,6 +1,7 @@
 // /*APP 화면 위의 로고, 뒤로가기 위젯 */
 
 import 'package:flutter/material.dart';
+import 'package:frontend/screen/MainScreen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
@@ -31,8 +32,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             //logo 누르면 main으로 돌아감
             GestureDetector(
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (route) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainScreen(),
+                  ),
+                );
               },
               child: Image.asset(
                 'images/mainIcon.png',
@@ -41,8 +46,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (route) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainScreen(),
+                  ),
+                );
               },
               child: Image.asset(
                 'images/mainIcon_text.png',

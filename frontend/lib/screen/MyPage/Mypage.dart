@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/widget/AppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Api/RootUrlProvider.dart';
@@ -7,10 +8,13 @@ import 'package:frontend/screen/MyPage/ChangeAddress.dart';
 import 'package:frontend/screen/MyPage/ChangeBodyInfo.dart';
 import 'package:frontend/screen/MyPage/ChangePhoneNum.dart';
 import 'package:frontend/screen/MyPage/ChangeGuardianPhoneNum.dart';
+import 'package:frontend/screen/MyPage/ChangeHospitalNum.dart';
+
 import 'package:logging/logging.dart';
 
+
 class Mypage extends StatefulWidget {
-  const Mypage({Key? key}) : super(key: key);
+  const Mypage({super.key});
 
   @override
   _MypageState createState() => _MypageState();
@@ -23,14 +27,51 @@ class _MypageState extends State<Mypage> {
   late String userBirth = '';
   late String userGender = '';
   late String guardPhone = '';
+  late String hospitalCall = '';
   late String height = '';
   late String weight = '';
-
+  late String userAddress = '';
   @override
   void initState() {
     super.initState();
     fetchUserData();
     fetchNameNPhone();
+    fetchHospitalCall();
+  }
+
+  Future<void> fetchHospitalCall() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/hospital/'),
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(response.body);
+          setState(() {
+            hospitalCall = userData['hospitalCall']?.toString() ?? '미정';
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
   }
 
   Future<void> fetchNameNPhone() async {
@@ -93,7 +134,20 @@ class _MypageState extends State<Mypage> {
             guardPhone = userData['guardPhone']?.toString() ?? '미정';
             height = userData['height']?.toString() ?? '0';
             weight = userData['weight']?.toString() ?? '0';
-
+            if (userBirth == '0001-01-01') {
+              userBirth = '미정';
+            }
+            if (userGender == '') {
+              userGender = '미정';
+            }
+            if (guardPhone == '0100000000') {
+              guardPhone = '미정';
+            }
+            if (userGender == 'Male') {
+              userBirth = '남성';
+            } else if (userGender == 'Female') {
+              userBirth = '여성';
+            }
             // 값이 모두 0이면 미정으로 설정
             if (height == '0' && weight == '0') {
               height = '';
@@ -129,9 +183,7 @@ class _MypageState extends State<Mypage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('마이페이지'),
-        ),
+        appBar: const CustomAppBar(),
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -175,7 +227,7 @@ class _MypageState extends State<Mypage> {
                         }),
                         buildInfoRow(
                           '거주지',
-                          '서울특별시 노원구\n 라이프신동아파트 116동 901호',
+                          userAddress,
                           hasButton: true,
                           onPressed: () {
                             Navigator.push(
@@ -213,6 +265,14 @@ class _MypageState extends State<Mypage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ChangeGuardianPhoneNum()),
+                          );
+                        }),
+                        buildInfoRow('주 병원 전화번호', hospitalCall, hasButton: true,
+                            onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChangeHospitalNum()),
                           );
                         }),
                       ],
