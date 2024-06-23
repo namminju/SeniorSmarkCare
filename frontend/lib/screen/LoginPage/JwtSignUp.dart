@@ -42,7 +42,7 @@ class _JwtSignUpState extends State<JwtSignUp> {
       context: context,
       builder: (BuildContext context) {
         return const CloseDialog(
-          text: '회원가입에 실패하였습니다. 다시 시도해주세요.',
+          text: '회원가입에 실패하였습니다. \n다시 시도해주세요.',
         );
       },
     );
@@ -181,7 +181,6 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                       activeColor: const Color.fromARGB(
                                           255, 254, 178, 178),
                                     ),
-
                                     const Text(
                                       '사용자의 전화번호가 맞나요?',
                                       style: TextStyle(
@@ -192,7 +191,6 @@ class _JwtSignUpState extends State<JwtSignUp> {
                                     const Text(
                                       '*',
                                       style: TextStyle(
-
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red),
@@ -203,22 +201,19 @@ class _JwtSignUpState extends State<JwtSignUp> {
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 20,
                         ),
                         if (_isPhoneVerified) ...[
                           Padding(
                             padding: const EdgeInsets.all(2.0),
-
                             child: Stack(
                               alignment: Alignment.centerRight,
                               children: [
                                 TextField(
                                   controller: passwordController1,
-
+                                  obscureText: true,
                                   decoration: const InputDecoration(
-
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
@@ -248,10 +243,9 @@ class _JwtSignUpState extends State<JwtSignUp> {
                               alignment: Alignment.centerRight,
                               children: [
                                 TextField(
+                                  obscureText: true,
                                   controller: passwordController2,
-
                                   decoration: const InputDecoration(
-
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
