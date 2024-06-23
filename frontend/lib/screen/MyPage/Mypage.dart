@@ -12,7 +12,6 @@ import 'package:frontend/screen/MyPage/ChangeHospitalNum.dart';
 
 import 'package:logging/logging.dart';
 
-
 class Mypage extends StatefulWidget {
   const Mypage({super.key});
 
@@ -31,12 +30,63 @@ class _MypageState extends State<Mypage> {
   late String height = '';
   late String weight = '';
   late String userAddress = '';
+  late String userDetailAddress = '';
   @override
   void initState() {
     super.initState();
     fetchUserData();
     fetchNameNPhone();
     fetchHospitalCall();
+    fetchUserAddress();
+  }
+
+  Future<void> fetchUserAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Map<String, String> headers = {
+        "accept": "*/*",
+        "Authorization": "Token $token"
+      };
+
+      try {
+        var response = await http.get(
+          Uri.parse('${RootUrlProvider.baseURL}/accounts/address/my'),
+          headers: headers,
+        );
+        var utf8Data = utf8.decode(response.bodyBytes);
+
+        if (response.statusCode == 200) {
+          var userData = json.decode(utf8Data);
+          setState(() {
+            userAddress = userData['city']?.toString() ?? '미정';
+            /*originUserAddress += ' ';
+            originUserAddress += userData['district']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['neighborhood']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['road_address']?.toString() ?? '';
+            originUserAddress += ' ';
+            originUserAddress += userData['building_number']?.toString() ?? '';
+            */
+            userDetailAddress =
+                userData['detailed_address']?.toString() ?? '미정';
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+          // Handle failure
+        }
+      } catch (e) {
+        print('Error loading user data: $e');
+        // Handle exceptions
+      }
+    } else {
+      print('Token not found');
+      // Handle case where token is not available
+    }
+    print('userAddress');
+    print(userAddress);
   }
 
   Future<void> fetchHospitalCall() async {
@@ -227,7 +277,7 @@ class _MypageState extends State<Mypage> {
                         }),
                         buildInfoRow(
                           '거주지',
-                          userAddress,
+                          '$userAddress\n$userDetailAddress',
                           hasButton: true,
                           onPressed: () {
                             Navigator.push(
