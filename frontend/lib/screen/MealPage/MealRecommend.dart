@@ -111,8 +111,8 @@ class _MealRecommend extends State<MealRecommend> {
                           const SizedBox(width: 8), // 이미지와 텍스트 사이 간격 조절
                           Text(
                             username.isNotEmpty
-                                ? '$username님께                      '
-                                : '사용자 이름 없음                ',
+                                ? '$username님께             '
+                                : '사용자 이름 없음           ',
                             // 사용자 이름 출력
                             style: const TextStyle(
                               fontSize: 28.0,

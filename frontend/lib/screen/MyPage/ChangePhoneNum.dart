@@ -224,7 +224,7 @@ class _ChangePhoneNumState extends State<ChangePhoneNum> {
                                           255, 254, 178, 178),
                                     ),
                                     const Text(
-                                      '변경하려는 번호가 본인 번호가 맞나요?',
+                                      '변경하려는 번호 확인',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
